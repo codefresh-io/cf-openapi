@@ -1,0 +1,21 @@
+{
+  "name": "@codefresh-io/cf-openapi",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "eslint": "eslint lib/**"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.3",
+    "cf-errors": "^0.1.11",
+    "cf-logs": "^1.0.0",
+    "lodash": "^4.17.11",
+    "requestretry": "^4.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.11.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-mocha": "^4.11.0"
+  }
+}
