@@ -8,10 +8,11 @@ const lint = require('speccy/lint.js');
 
 
 const { components: { processor } } = require('../index');
+const sdkValidator = require('./sdkValidator');
 
 const tmpFile = path.resolve(os.tmpdir(), 'openapi.json');
-
 const speccyRelativeRulesPath = '../../../validation-rules';
+
 
 function collect(val, item) {
     item.push(val);
@@ -34,16 +35,23 @@ program
     .option('-v, --verbose', 'increase verbosity')
     .action((specFile, cmd) => {
         let specPath = specFile || './openapi.json';
-        if (cmd.postprocessed) {
-            specPath = path.resolve(process.cwd(), specPath);
-            console.log(specPath);
+        specPath = path.resolve(process.cwd(), specPath);
+
+        try {
             if (!require.resolve(specPath)) {
                 throw new Error(`No spec file by path: ${specPath}`);
             }
             const openapi = require(specPath); // eslint-disable-line
-            fs.writeFileSync(tmpFile, JSON.stringify(processor.postprocess(openapi)));
-            specPath = tmpFile;
-            console.log(`Using saved to temporary processed spec file to validate: ${tmpFile}`);
+            sdkValidator(openapi);
+
+            if (cmd.postprocessed) {
+                fs.writeFileSync(tmpFile, JSON.stringify(processor.postprocess(openapi)));
+                specPath = tmpFile;
+                console.log(`Using saved to temporary processed spec file to validate: ${tmpFile}`);
+            }
+        } catch (e) {
+            console.error(e.message);
+            process.exit(1);
         }
 
         lint.command(specPath, cmd)
