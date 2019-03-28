@@ -28,36 +28,36 @@ steps:
     commands:
         - yarn test
 
-#  add_git_tag:
-#    title: "Add Git tag"
-#    stage: CD
-#    image: codefresh/cli
-#    commands:
-#    - 'apk update && apk add jq'
-#    - 'export PACKAGE_VERSION=$(jq -r ".version" package.json)'
-#    - "echo Current version: $PACKAGE_VERSION"
-#    - "cf_export PACKAGE_VERSION"
-#    - "git tag $PACKAGE_VERSION"
-#    when:
-#      branch:
-#        only: [ master ]
-#
-#  create_release:
-#    stage: CD
-#    title: "Create github release"
-#    image: codefresh/build-cli
-#    commands:
-#    - 'curl --fail -X POST -d ''{"tag_name":"v${{PACKAGE_VERSION}}","target_commitish":"${{CF_REVISION}}","name":"Codefresh V${{PACKAGE_VERSION}}"}'' -H "Content-Type: application/json" -H "Authorization: token ${{GITHUB_TOKEN}}" https://api.github.com/repos/codefresh-io/js-sdk/releases'
-#    when:
-#      branch:
-#        only: [ master ]
-#
-#  deploy_to_npm:
-#    stage: CD
-#    title: "Publishing To Npm"
-#    image: codefresh/npm-publish:master
-#    commands:
-#    - NPM_TOKEN=${{NPM_TOKEN}} npm run ci-publish
-#    when:
-#      branch:
-#        only: [ master ]
+  add_git_tag:
+    title: "Add Git tag"
+    stage: CD
+    image: codefresh/cli
+    commands:
+    - 'apk update && apk add jq'
+    - 'export PACKAGE_VERSION=$(jq -r ".version" package.json)'
+    - "echo Current version: $PACKAGE_VERSION"
+    - "cf_export PACKAGE_VERSION"
+    - "git tag $PACKAGE_VERSION"
+    when:
+      branch:
+        only: [ master ]
+
+  create_release:
+    stage: CD
+    title: "Create github release"
+    image: codefresh/build-cli
+    commands:
+    - 'curl --fail -X POST -d ''{"tag_name":"v${{PACKAGE_VERSION}}","target_commitish":"${{CF_REVISION}}","name":"Codefresh V${{PACKAGE_VERSION}}"}'' -H "Content-Type: application/json" -H "Authorization: token ${{GITHUB_TOKEN}}" https://api.github.com/repos/codefresh-io/js-sdk/releases'
+    when:
+      branch:
+        only: [ master ]
+
+  deploy_to_npm:
+    stage: CD
+    title: "Publishing To Npm"
+    image: codefresh/npm-publish:master
+    commands:
+    - NPM_TOKEN=${{NPM_TOKEN}} npm run ci-publish
+    when:
+      branch:
+        only: [ master ]
