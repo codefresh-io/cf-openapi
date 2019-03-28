@@ -8,6 +8,7 @@ const lint = require('speccy/lint.js');
 
 
 const { components: { processor } } = require('../index');
+
 const tmpFile = path.resolve(os.tmpdir(), 'openapi.json');
 
 const speccyRelativeRulesPath = '../../../validation-rules';
@@ -18,7 +19,7 @@ function collect(val, item) {
 }
 
 program
-    .version("version")
+    .version('1.0.0')
     .usage('<command>')
     .option('-c, --config [configFile]', 'config file (containing JSON/YAML). See README for potential values.');
 
@@ -39,18 +40,18 @@ program
             if (!require.resolve(specPath)) {
                 throw new Error(`No spec file by path: ${specPath}`);
             }
-            const openapi = require(specPath);
+            const openapi = require(specPath); // eslint-disable-line
             fs.writeFileSync(tmpFile, JSON.stringify(processor.postprocess(openapi)));
             specPath = tmpFile;
             console.log(`Using saved to temporary processed spec file to validate: ${tmpFile}`);
         }
 
         lint.command(specPath, cmd)
-            .then( () => { process.exit(0) } )
-            .catch( (err) => {
+            .then(() => { process.exit(0); })
+            .catch((err) => {
                 if (err) console.error(err);
-                process.exit(1)
-            } );
+                process.exit(1);
+            });
     });
 
 program.parse(process.argv);
