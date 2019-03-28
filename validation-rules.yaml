@@ -1,0 +1,6 @@
+require: default
+rules:
+- name: operation-sdk-interface
+  object: operation
+  description: operation should have an x-sdk-interface
+  truthy: x-sdk-interface
