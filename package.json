@@ -11,7 +11,7 @@
     "cf-openapi": "./bin/cf-openapi"
   },
   "dependencies": {
-    "@codefresh-io/internal-service-config": "^1.0.0",
+    "@codefresh-io/internal-service-config": "^1.0.1",
     "bluebird": "^3.5.3",
     "cf-errors": "^0.1.11",
     "cf-logs": "^1.0.0",
