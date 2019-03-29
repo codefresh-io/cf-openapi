@@ -127,7 +127,7 @@ Dependency services are described inside the `openapi.json` using `x-internal-se
   "openapi": "3.0.0",
   "info": {...},
   "x-internal-services": [
-    "PIPELINE_MANAGER"
+    "pipeline-manager"
   ]
 }
 ```
