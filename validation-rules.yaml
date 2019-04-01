@@ -4,3 +4,7 @@ rules:
   object: operation
   description: operation should have an x-sdk-interface
   truthy: x-sdk-interface
+- name: service-name
+  object: openapi
+  description: openapi object should have x-service-name
+  truthy: x-service-name
