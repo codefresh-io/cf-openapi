@@ -11,7 +11,7 @@ const { components: { processor } } = require('../index');
 const sdkValidator = require('./sdkValidator');
 
 const tmpFile = path.resolve(os.tmpdir(), 'openapi.json');
-const speccyRelativeRulesPath = '../../../validation-rules';
+const speccyRelativeRulesPath = '../../codefresh-io/cf-openapi/validation-rules';
 
 
 function collect(val, item) {
