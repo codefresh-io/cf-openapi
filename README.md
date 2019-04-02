@@ -59,15 +59,35 @@ const config = require('./service.config');
 
 const app = express();
 
+const publishInterface = (serviceName, spec) => {
+    return eventbus.publishEvent('openapi.push', {
+        aggregateId: serviceName,
+        props: {
+            spec: JSON.stringify(spec)
+        }
+    }, true, true);
+};
+
+const subscribeInterface = (handler) => {
+    eventbus.subscribe('openapi.push', (data) => {
+        const serviceName = data.aggregateId;
+        const spec = JSON.parse(data.props.spec);
+        return Promise.resolve()
+            .then(() => handler(serviceName, spec));
+    });
+};
+
 openapi.init(config)
-openapi.endpoints().addAdminSpecMiddleware(adminMiddleware)
+openapi.endpoints().addDependenciesSpecMiddleware(dependenciesMiddleware)
 openapi.endpoints().register(app)
 openapi.dependencies().fetch();
+openapi.events().setPublishInterface(publishInterface)
+openapi.events().setSubscribeInterface(subscribeInterface)
 
 app.listen(8080);
 
-openapi.events().subscribe(eventbus);
-openapi.events().publish(eventbus);
+openapi.events().subscribe();
+openapi.events().publish();
 ```
 
 
@@ -101,7 +121,7 @@ Config:
             redocPath: '/api', // default
             filename: './openapi.json' // default
         },
-        adminSpec: {
+        dependenciesSpec: {
             specPath: '/api/admin/openapi.json' // default
             redocPath: '/api/admin' // default
         }
@@ -109,7 +129,7 @@ Config:
 }
 ```
 
-Use `false` value to explicitly disable `spec` or `adminSpec`:
+Use `false` value to explicitly disable `spec` or `dependenciesSpec`:
 ```ecmascript 6
 {
     openapi: {
