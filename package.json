@@ -10,7 +10,7 @@
     "cf-openapi": "./bin/cf-openapi"
   },
   "dependencies": {
-    "bluebird": "^3.5.3",
+    "bluebird": "^3.5.4",
     "cf-errors": "^0.1.11",
     "cf-logs": "^1.0.0",
     "codefresh-sdk": "^1.0.4",
@@ -31,10 +31,12 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-mocha": "^4.11.0",
+    "express": "^4.16.4",
     "jest": "^24.5.0"
   },
   "eslintConfig": {},
   "jest": {
+    "testRegex": "/__tests__/.*(test|spec)\\.js?$",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/"

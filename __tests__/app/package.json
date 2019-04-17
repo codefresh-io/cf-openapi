@@ -1,0 +1,16 @@
+{
+  "name": "test",
+  "version": "0.0.1",
+  "description": "test service",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node .",
+    "start:debug": "node --inspect .",
+    "dev": "nodemon .",
+    "dev:debug": "nodemon --inspect .",
+    "test": "jest --coverage --runInBand",
+    "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
+    "eslint": "eslint server/**",
+    "openapi-lint": "cf-openapi lint && cf-openapi lint -p"
+  }
+}
