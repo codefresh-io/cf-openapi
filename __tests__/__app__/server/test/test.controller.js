@@ -33,7 +33,7 @@ class TestController {
     }
 
     errorEndpoint(req, res) { // eslint-disable-line
-        return req.params;
+        return Promise.reject();
     }
 }
 

@@ -1,16 +1,14 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "test spec",
+    "title": "pest spec",
     "version": "0.0.1",
     "contact": {
       "url": "https://www.codefresh.io"
     }
   },
-  "x-service-name": "test",
+  "x-service-name": "pest",
   "x-base-path": "/api",
-  "x-internal-services": [
-  ],
   "servers": [
     {
       "url": "http://local.codefresh.io:9010/api"
@@ -23,33 +21,24 @@
   ],
   "tags": [
     {
-      "name": "Test",
-      "description": "test",
-      "x-id": "test"
+      "name": "Pest",
+      "description": "Pest",
+      "x-id": "pest"
     }
   ],
   "paths": {
-    "/endpoint": {
+    "/pest": {
       "get": {
-        "tags": ["test"],
-        "operationId": "test-endpoint",
-        "x-sdk-interface": "test.endpoint",
-        "summary": "Endpoint",
+        "tags": ["pest"],
+        "operationId": "pest-endpoint",
+        "x-sdk-interface": "pest",
+        "summary": "pest",
         "parameters": [
         ],
         "responses": {
           "200": {
             "$ref": "#/components/responses/json"
           }
-        },
-        "x-endpoint": {
-          "preMiddleware": [
-            "test.preMiddleware"
-          ],
-          "postMiddleware": [
-            "test.postMiddleware"
-          ],
-          "handler": "test.endpoint"
         }
       }
     }

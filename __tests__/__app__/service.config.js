@@ -6,13 +6,13 @@ module.exports = {
     services: {
         buda: {
             name: 'buda',
-            port: 9001,
             uri: 'buda.pest',
             protocol: 'http',
         },
 
         pest: {
             name: 'pest',
+            port: 9001,
             uri: 'buda.pest',
             protocol: 'http',
         },

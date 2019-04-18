@@ -1,8 +1,11 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const express = require('express');
 const Promise = require('bluebird');
 
 const config = require('./service.config');
 const { openapi } = require('../../index');
+const globalMiddleware = require('./server/global.middleware');
+const eventsInterface = require('./events-interface');
 
 class App {
     constructor() {
@@ -14,6 +17,10 @@ class App {
     async start() {
         const deferred = Promise.defer();
         openapi.init(config);
+        openapi.events().setSubscribeInterface(eventsInterface.subscribe);
+        openapi.events().setPublishInterface(eventsInterface.publish);
+        openapi.endpoints().addSpecMiddleware(globalMiddleware.specMiddleware);
+        openapi.endpoints().addDependenciesSpecMiddleware(globalMiddleware.dependenciesSpecMiddleware);
         openapi.endpoints().register(this.app);
         openapi.dependencies().fetch();
         this.server = this.app.listen(0, () => {

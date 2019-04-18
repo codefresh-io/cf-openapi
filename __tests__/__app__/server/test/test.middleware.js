@@ -7,10 +7,6 @@ class TestMiddleware {
         console.log('post-middleware');
         next();
     }
-    errorMiddleware(error, req, res, next) {
-        console.log('error-middleware');
-        next();
-    }
 }
 
 module.exports = new TestMiddleware();
