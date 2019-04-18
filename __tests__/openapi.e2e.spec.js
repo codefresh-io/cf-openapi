@@ -9,7 +9,7 @@ let request = require('request-promise');
 const budaSpec = require('./__data__/buda-openapi');
 const pestSpec = require('./__data__/pest-openapi');
 
-const eventsInteface = require('./__app__/events-interface');
+const eventsInterface = require('./__app__/events-interface');
 const middleware = require('./__app__/server/test/test.middleware');
 const controller = require('./__app__/server/test/test.controller');
 const globalMiddleware = require('./__app__/server/global.middleware');
@@ -50,8 +50,8 @@ const pestNock = nock('http://buda.pest:9001')
 describe('openapi e2e', () => {
     beforeAll(async () => {
         await app.start();
-        eventsInteface.callback('buda');
-        eventsInteface.callback('pest');
+        eventsInterface.callback('buda');
+        eventsInterface.callback('pest');
         const url = `http://localhost:${app.port}`;
         sdk.configure(await Config.nonAuthenticated({
             url,
@@ -70,11 +70,11 @@ describe('openapi e2e', () => {
     });
 
     it('should listen to openapi refresh events', async () => {
-        expect(eventsInteface.subscribeCalls).toBe(1);
+        expect(eventsInterface.subscribeCalls).toBe(1);
     });
 
     it('should push openapi refresh event on startup', async () => {
-        expect(eventsInteface.publishCalls).toBe(1);
+        expect(eventsInterface.publishCalls).toBe(1);
     });
 
     it('should fetch dependencies', async () => {
