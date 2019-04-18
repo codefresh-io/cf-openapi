@@ -14,16 +14,6 @@ const middleware = require('./__app__/server/test/test.middleware');
 const controller = require('./__app__/server/test/test.controller');
 const globalMiddleware = require('./__app__/server/global.middleware');
 
-const { subscribe, publish } = eventsInteface;
-eventsInteface.subscribe = (cb) => {
-    this.calls = this.calls + 1;
-    return subscribe(cb);
-};
-eventsInteface.publish = (data) => {
-    this.calls = this.calls + 1;
-    return publish(data);
-};
-
 jest.spyOn(globalMiddleware, 'errorMiddleware');
 jest.spyOn(globalMiddleware, 'specMiddleware');
 jest.spyOn(globalMiddleware, 'dependenciesSpecMiddleware');
