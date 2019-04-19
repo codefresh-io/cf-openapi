@@ -29,6 +29,7 @@ jest.spyOn(controller, 'globalConditionalNonLoadedEndpoint');
 jest.spyOn(controller, 'paramsEndpoint');
 jest.spyOn(controller, 'paramsOptionalEndpoint');
 jest.spyOn(controller, 'errorEndpoint');
+jest.spyOn(controller, 'globalConditionalOverridedLoadedEndpoint');
 
 const sdk = new Codefresh();
 
@@ -151,6 +152,14 @@ describe('openapi e2e', () => {
         expect(middleware.preMiddleware).not.toBeCalled();
         expect(middleware.postMiddleware).not.toBeCalled();
         expect(controller.globalConditionalNonLoadedEndpoint).not.toBeCalled();
+    });
+
+    it('should not expose global conditional overrided-loaded endpoint', async () => {
+        const result = await sdk.test.globalConditionalOverridedLoadedEndpoint();
+        expect(result).toBe('global overrided loaded');
+        expect(middleware.preMiddleware).toBeCalled();
+        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(controller.globalConditionalOverridedLoadedEndpoint).toBeCalled();
     });
 
     it('should expose params endpoint', async () => {

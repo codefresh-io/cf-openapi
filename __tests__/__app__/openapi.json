@@ -16,13 +16,18 @@
   "x-endpoint-conditions": [
     {
       "weight": 0,
+      "condition": "global.non-loaded",
+      "handlerRegex": "(.*)\\.globalConditional(.+)LoadedEndpoint"
+    },
+    {
+      "weight": 0,
       "condition": "global.loaded",
       "handlerRegex": "(.*)\\.globalConditionalLoadedEndpoint"
     },
     {
-      "weight": 0,
-      "condition": "global.non-loaded",
-      "handlerRegex": "(.*)\\.globalConditionalNonLoadedEndpoint"
+      "weight": 1,
+      "condition": "global.overrided-loaded",
+      "handlerRegex": "(.*)\\.globalConditionalOverridedLoadedEndpoint"
     }
   ],
   "servers": [
@@ -187,6 +192,30 @@
             "test.postMiddleware"
           ],
           "handler": "test.globalConditionalNonLoadedEndpoint"
+        }
+      }
+    },
+    "/global/conditional-overrided-loaded": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-global-conditional-overrided-loaded-endpoint",
+        "x-sdk-interface": "test.globalConditionalOverridedLoadedEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.globalConditionalOverridedLoadedEndpoint"
         }
       }
     },

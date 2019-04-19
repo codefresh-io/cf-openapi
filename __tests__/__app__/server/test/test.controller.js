@@ -24,6 +24,10 @@ class TestController {
         return 'global conditional loaded';
     }
 
+    globalConditionalOverridedLoadedEndpoint(req, res) { // eslint-disable-line
+        return 'global overrided loaded';
+    }
+
     paramsEndpoint(req, res) { // eslint-disable-line
         return req.params;
     }
