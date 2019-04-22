@@ -48,6 +48,21 @@
     }
   ],
   "paths": {
+    "/not-existing": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-not-existing-endpoint",
+        "x-sdk-interface": "test.notExistingEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        }
+      }
+    },
     "/endpoint": {
       "get": {
         "tags": ["test"],

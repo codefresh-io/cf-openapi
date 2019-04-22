@@ -108,6 +108,10 @@ describe('openapi e2e', () => {
         expect(globalMiddleware.dependenciesSpecMiddleware).toBeCalled();
     });
 
+    it('should not expose endpoint that does not exist', async () => {
+        await expect(sdk.test.notExistingEndpoint()).rejects.toThrow();
+    });
+
     it('should expose endpoint', async () => {
         const result = await sdk.test.endpoint();
         expect(result).toBe('endpoint');
