@@ -1,6 +1,6 @@
 {
   "name": "@codefresh-io/cf-openapi",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "test": "jest --runInBand",
     "eslint": "eslint lib/**",
