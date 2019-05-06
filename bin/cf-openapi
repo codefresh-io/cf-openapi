@@ -20,6 +20,10 @@ function collect(val, item) {
     return item;
 }
 
+process.on('uncaughtException', (error) => {
+    console.log(error.stack);
+});
+
 program
     .version('1.0.0')
     .usage('<command>')
