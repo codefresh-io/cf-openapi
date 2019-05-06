@@ -39,7 +39,7 @@ program
         specPath = path.resolve(process.cwd(), specPath);
 
         try {
-            if (!require.resolve(specPath)) {
+            if (!fs.existsSync(specPath)) {
                 throw new Error(`No spec file by path: ${specPath}`);
             }
             const openapi = require(specPath); // eslint-disable-line
