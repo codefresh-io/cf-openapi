@@ -1,6 +1,6 @@
 module.exports = {
     'plugins': [
-        'mocha'
+        'jest'
     ],
     'extends': 'airbnb-base',
     'rules': {
@@ -15,6 +15,6 @@ module.exports = {
         'class-methods-use-this': 0
     },
     'env': {
-        'mocha': true,
+        'jest': true,
     }
 };

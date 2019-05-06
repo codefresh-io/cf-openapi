@@ -9,6 +9,7 @@ const lint = require('speccy/lint.js');
 
 const { components: { processor } } = require('../index');
 const sdkValidator = require('./sdkValidator');
+const endpointsValidator = require('./endpointsValidator');
 
 const tmpFile = path.resolve(os.tmpdir(), 'openapi.json');
 const speccyRelativeRulesPath = '../../@codefresh-io/cf-openapi/validation-rules';
@@ -43,6 +44,7 @@ program
             }
             const openapi = require(specPath); // eslint-disable-line
             sdkValidator(openapi);
+            endpointsValidator(openapi);
 
             if (cmd.postprocessed) {
                 fs.writeFileSync(tmpFile, JSON.stringify(processor.postprocess(openapi)));

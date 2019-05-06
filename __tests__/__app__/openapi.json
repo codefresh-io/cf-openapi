@@ -1,0 +1,383 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "test spec",
+    "version": "0.0.1",
+    "contact": {
+      "url": "https://www.codefresh.io"
+    }
+  },
+  "x-service-name": "test",
+  "x-base-path": "/api",
+  "x-internal-services": [
+    "buda",
+    "pest"
+  ],
+  "x-endpoint-conditions": [
+    {
+      "weight": 0,
+      "condition": "global.non-loaded",
+      "handlerRegex": "(.*)\\.globalConditional(.+)LoadedEndpoint"
+    },
+    {
+      "weight": 0,
+      "condition": "global.loaded",
+      "handlerRegex": "(.*)\\.globalConditionalLoadedEndpoint"
+    },
+    {
+      "weight": 1,
+      "condition": "global.overrided-loaded",
+      "handlerRegex": "(.*)\\.globalConditionalOverridedLoadedEndpoint"
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://local.codefresh.io:9010/api"
+    }
+  ],
+  "security": [
+    {
+      "apiKey": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Test",
+      "description": "test",
+      "x-id": "test"
+    }
+  ],
+  "paths": {
+    "/not-existing": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-not-existing-endpoint",
+        "x-sdk-interface": "test.notExistingEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        }
+      }
+    },
+    "/endpoint": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-endpoint",
+        "x-sdk-interface": "test.endpoint",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.endpoint"
+        }
+      }
+    },
+    "/non-endpoint": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-non-endpoint",
+        "x-sdk-interface": "test.nonEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "isEndpoint": false,
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.nonEndpoint"
+        }
+      }
+    },
+    "/conditional-loaded": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-conditional-loaded-endpoint",
+        "x-sdk-interface": "test.conditionalLoadedEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "condition": "test.loaded",
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.conditionalLoadedEndpoint"
+        }
+      }
+    },
+    "/conditional-non-loaded": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-conditional-non-loaded-endpoint",
+        "x-sdk-interface": "test.conditionalNonLoadedEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "condition": "test.non-loaded",
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.conditionalNonLoadedEndpoint"
+        }
+      }
+    },
+    "/global/conditional-loaded": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-global-conditional-loaded-endpoint",
+        "x-sdk-interface": "test.globalConditionalLoadedEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.globalConditionalLoadedEndpoint"
+        }
+      }
+    },
+    "/global/conditional-non-loaded": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-global-conditional-non-loaded-endpoint",
+        "x-sdk-interface": "test.globalConditionalNonLoadedEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.globalConditionalNonLoadedEndpoint"
+        }
+      }
+    },
+    "/global/conditional-overrided-loaded": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-global-conditional-overrided-loaded-endpoint",
+        "x-sdk-interface": "test.globalConditionalOverridedLoadedEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.globalConditionalOverridedLoadedEndpoint"
+        }
+      }
+    },
+    "/params-endpoint/optional/{param_1}/{param_2}": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-params-optional-endpoint",
+        "x-sdk-interface": "test.paramsOptionalEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "param_1",
+            "description": "param_1",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "param_2",
+            "description": "param",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "x-optional": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.paramsOptionalEndpoint"
+        }
+      }
+    },
+    "/params-endpoint/{param_1}/{param_2}": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-params-endpoint",
+        "x-sdk-interface": "test.paramsEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "param_1",
+            "description": "param_1",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "param_2",
+            "description": "param",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.paramsEndpoint"
+        }
+      }
+    },
+    "/error-endpoint": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-error-endpoint",
+        "x-sdk-interface": "test.errorEndpoint",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware",
+            "global.errorMiddleware"
+          ],
+          "handler": "test.errorEndpoint"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "json": {
+        "type": "object",
+        "properties": {
+
+        },
+        "description": "json"
+      }
+    },
+    "requestBodies": {
+      "json": {
+        "description": "json",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/json"
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "json": {
+        "description": "json",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/json"
+            }
+          }
+        }
+      }
+    }
+  }
+}
