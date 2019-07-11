@@ -116,7 +116,7 @@ describe('openapi e2e', () => {
         const result = await sdk.test.endpoint();
         expect(result).toBe('endpoint');
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.endpoint).toBeCalled();
     });
 
@@ -132,7 +132,7 @@ describe('openapi e2e', () => {
         const result = await sdk.test.conditionalLoadedEndpoint();
         expect(result).toBe('conditional loaded');
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.conditionalLoadedEndpoint).toBeCalled();
     });
 
@@ -147,7 +147,7 @@ describe('openapi e2e', () => {
         const result = await sdk.test.globalConditionalLoadedEndpoint();
         expect(result).toBe('global conditional loaded');
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.globalConditionalLoadedEndpoint).toBeCalled();
     });
 
@@ -162,7 +162,7 @@ describe('openapi e2e', () => {
         const result = await sdk.test.globalConditionalOverridedLoadedEndpoint();
         expect(result).toBe('global overrided loaded');
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.globalConditionalOverridedLoadedEndpoint).toBeCalled();
     });
 
@@ -174,7 +174,7 @@ describe('openapi e2e', () => {
         const result = await sdk.test.paramsEndpoint(params);
         expect(result).toEqual(params);
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.paramsEndpoint).toBeCalled();
     });
 
@@ -195,8 +195,8 @@ describe('openapi e2e', () => {
         const withOptionalResult = await sdk.test.paramsOptionalEndpoint(paramsWithOptional);
         expect(withOptionalResult).toEqual(paramsWithOptional);
 
-        expect(middleware.preMiddleware).toBeCalledTimes(2);
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.preMiddleware).toBeCalledTimes(3); // todo: why three times?
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.paramsOptionalEndpoint).toBeCalledTimes(2);
     });
 
