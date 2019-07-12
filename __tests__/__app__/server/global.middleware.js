@@ -13,6 +13,11 @@ class GlobalMiddleware {
         console.log('spec middleware');
         next();
     }
+
+    scopesMiddleware(req, res, next) {
+        console.log('scopes middleware');
+        next();
+    }
 }
 
 module.exports = new GlobalMiddleware();
