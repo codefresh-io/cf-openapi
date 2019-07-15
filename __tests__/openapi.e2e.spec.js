@@ -14,7 +14,7 @@ const middleware = require('./__app__/server/test/test.middleware');
 const controller = require('./__app__/server/test/test.controller');
 const globalMiddleware = require('./__app__/server/global.middleware');
 
-jest.spyOn(globalMiddleware, 'errorMiddleware');
+jest.spyOn(globalMiddleware, '_errorMiddlewareChecker');
 jest.spyOn(globalMiddleware, 'specMiddleware');
 jest.spyOn(globalMiddleware, 'dependenciesSpecMiddleware');
 
@@ -203,8 +203,8 @@ describe('openapi e2e', () => {
     it('should catch errors from endpoints', async () => {
         await expect(sdk.test.errorEndpoint()).rejects.toThrow();
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).toBeCalled();
-        expect(globalMiddleware.errorMiddleware).toBeCalled();
+        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
         expect(controller.errorEndpoint).toBeCalled();
     });
 

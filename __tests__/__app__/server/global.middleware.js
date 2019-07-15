@@ -1,6 +1,13 @@
 class GlobalMiddleware {
-    errorMiddleware(error, req, res) {
+    constructor() {
+        // problematic to mock errorMiddleware
+        this._errorMiddlewareChecker = () => {
+        };
+    }
+
+    errorMiddleware(error, req, res, next) {
         console.log('error-middleware');
+        this._errorMiddlewareChecker();
         res.status(500).send(error);
     }
 

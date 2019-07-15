@@ -23,7 +23,7 @@ const mockScopeExtractor = jest.fn(() => {
 });
 const mockMissingScopeHandler = jest.fn(() => {
     console.log('missing scope handler');
-    return  new MissingScopesError();
+    return new MissingScopesError();
 });
 openapi.endpoints().setScopeExtractor(mockScopeExtractor);
 
@@ -37,7 +37,7 @@ const controller = require('./__app__/server/test/test.controller');
 const globalMiddleware = require('./__app__/server/global.middleware');
 
 jest.spyOn(globalMiddleware, 'scopesMiddleware');
-jest.spyOn(globalMiddleware, 'errorMiddleware');
+jest.spyOn(globalMiddleware, '_errorMiddlewareChecker');
 
 jest.spyOn(authMiddleware, 'isAuthenticated');
 jest.spyOn(middleware, 'preMiddleware');
@@ -134,9 +134,9 @@ describe('openapi auth e2e', () => {
             const result = await sdk.test.scopes.common();
             expect(result).toBe('auth');
             expect(mockScopeExtractor).toBeCalled();
-            expect(mockMissingScopeHandler).toBeCalled();
             expect(mockScopeExtractor.mock.results[0].value).toBeInstanceOf(DisableScopesError);
             expect(controller.authEndpoint).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
         });
 
         it('should pass error to next function if error is not of type DisableScopesError', async () => {
@@ -149,10 +149,10 @@ describe('openapi auth e2e', () => {
             expect(scopeExtractorWithError).toBeCalled();
             expect(scopeExtractorWithError.mock.results[0].value).toBeInstanceOf(CustomError);
             expect(controller.authEndpoint).not.toBeCalled();
-            expect(globalMiddleware.errorMiddleware()).toBeCalled(); // todo: type error
+            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
         });
 
-        //todo : finish
+        // todo: finish
         it('should pass MissingScopesError to next if user have not enough scope and missingScopeHandler is not set', async () => {
         });
 
