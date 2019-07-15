@@ -193,9 +193,19 @@ describe('openapi auth e2e', () => {
             await sdk.test.scopes.put();
             await sdk.test.scopes.patch();
             await sdk.test.scopes.delete();
-            expect(scopeExtractor).toBeCalledTimes(5);
-            expect(controller.authEndpoint).toBeCalledTimes(5);
+            await sdk.test.scopes.action();
+            await sdk.test.scopes.scope();
+            expect(scopeExtractor).toBeCalledTimes(7);
+            expect(controller.authEndpoint).toBeCalledTimes(7);
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
+
+            jest.clearAllMocks();
+
+            // have access to all ops for "test" resource
+            await expect(sdk.test.scopes.admin()).rejects.toThrow();
+            expect(controller.authEndpoint).not.toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
         });
 
         it('should require read scope when neither action nor scope not specified and method is GET', async () => {
