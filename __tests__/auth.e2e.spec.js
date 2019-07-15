@@ -201,7 +201,6 @@ describe('openapi auth e2e', () => {
 
             jest.clearAllMocks();
 
-            // have access to all ops for "test" resource
             await expect(sdk.test.scopes.admin()).rejects.toThrow();
             expect(controller.authEndpoint).not.toBeCalled();
             expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
@@ -219,7 +218,6 @@ describe('openapi auth e2e', () => {
 
             jest.clearAllMocks();
 
-            // have access to all ops for "test" resource
             const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:write', 'test:action', 'test:bla:bla']);
             openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
             await expect(sdk.test.scopes.admin()).rejects.toThrow();
@@ -241,7 +239,6 @@ describe('openapi auth e2e', () => {
 
             jest.clearAllMocks();
 
-            // have access to all ops for "test" resource
             const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:read', 'test:action', 'test:bla:bla']);
             openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
             await expect(sdk.test.scopes.admin()).rejects.toThrow();
@@ -281,7 +278,6 @@ describe('openapi auth e2e', () => {
 
             jest.clearAllMocks();
 
-            // have access to all ops for "test" resource
             const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:write', 'test:read', 'test:scope', 'test:bla:bla']);
             openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
             await expect(sdk.test.scopes.admin()).rejects.toThrow();
@@ -301,7 +297,6 @@ describe('openapi auth e2e', () => {
 
             jest.clearAllMocks();
 
-            // have access to all ops for "test" resource
             const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:write', 'test:read', 'test:action', 'test:bla:bla']);
             openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
             await expect(sdk.test.scopes.admin()).rejects.toThrow();
