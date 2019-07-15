@@ -630,6 +630,199 @@
           "handler": "test.authEndpoint"
         }
       }
+    },
+    "/test/scopes/read": {
+      "get": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-auth-with-resource",
+        "x-sdk-interface": "test.scopes.read",
+        "summary": "Endpoint with auth",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "postMiddleware": [
+            "global.errorMiddleware"
+          ],
+          "handler": "test.authEndpoint"
+        }
+      }
+    },
+    "/test/scopes/write": {
+      "post": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-auth-with-resource",
+        "x-sdk-interface": "test.scopes.post",
+        "summary": "Endpoint with auth",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "postMiddleware": [
+            "global.errorMiddleware"
+          ],
+          "handler": "test.authEndpoint"
+        }
+      },
+      "put": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-auth-with-resource",
+        "x-sdk-interface": "test.scopes.put",
+        "summary": "Endpoint with auth",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "postMiddleware": [
+            "global.errorMiddleware"
+          ],
+          "handler": "test.authEndpoint"
+        }
+      },
+      "patch": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-auth-with-resource",
+        "x-sdk-interface": "test.scopes.patch",
+        "summary": "Endpoint with auth",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "postMiddleware": [
+            "global.errorMiddleware"
+          ],
+          "handler": "test.authEndpoint"
+        }
+      },
+      "delete": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-auth-with-resource",
+        "x-sdk-interface": "test.scopes.delete",
+        "summary": "Endpoint with auth",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "postMiddleware": [
+            "global.errorMiddleware"
+          ],
+          "handler": "test.authEndpoint"
+        }
+      }
+    },
+    "/test/scopes/admin": {
+      "get": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-auth-with-resource",
+        "x-sdk-interface": "test.scopes.admin",
+        "summary": "Endpoint with auth",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "auth": {
+            "acl": {
+              "admin": true
+            }
+          },
+          "postMiddleware": [
+            "global.errorMiddleware"
+          ],
+          "handler": "test.authEndpoint"
+        }
+      }
+    },
+    "/test/scopes/action": {
+      "get": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-auth-with-resource",
+        "x-sdk-interface": "test.scopes.action",
+        "summary": "Endpoint with auth",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "auth": {
+            "acl": {
+              "action": "action"
+            }
+          },
+          "postMiddleware": [
+            "global.errorMiddleware"
+          ],
+          "handler": "test.authEndpoint"
+        }
+      }
+    },
+    "/test/scopes/scope": {
+      "get": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-auth-with-resource",
+        "x-sdk-interface": "test.scopes.scope",
+        "summary": "Endpoint with auth",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/json"
+          }
+        },
+        "x-endpoint": {
+          "auth": {
+            "acl": {
+              "scope": "scope"
+            }
+          },
+          "postMiddleware": [
+            "global.errorMiddleware"
+          ],
+          "handler": "test.authEndpoint"
+        }
+      }
     }
   },
   "components": {

@@ -21,9 +21,9 @@ const mockScopeExtractor = jest.fn(() => {
     console.log('scope extractor');
     throw new DisableScopesError();
 });
-const mockMissingScopeHandler = jest.fn(() => {
-    console.log('missing scope handler');
-    return new MissingScopesError();
+const mockMissingScopeHandler = jest.fn((missingScopes) => {
+    console.log(`missing scope handler: ${missingScopes}`);
+    return new MissingScopesError(`Missing scopes: ${missingScopes}`);
 });
 openapi.endpoints().setScopeExtractor(mockScopeExtractor);
 
@@ -56,6 +56,8 @@ nock('http://buda.pest:9001')
     .get('/api/openapi.json?raw')
     .twice()
     .reply(200, pestSpec);
+
+const CustomError = class extends Error {};
 
 let abacFactoryCalls;
 
@@ -140,7 +142,6 @@ describe('openapi auth e2e', () => {
         });
 
         it('should pass error to next function if error is not of type DisableScopesError', async () => {
-            const CustomError = class extends Error {};
             const scopeExtractorWithError = jest.fn(() => {
                 throw new CustomError();
             });
@@ -150,31 +151,153 @@ describe('openapi auth e2e', () => {
             expect(scopeExtractorWithError.mock.results[0].value).toBeInstanceOf(CustomError);
             expect(controller.authEndpoint).not.toBeCalled();
             expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(CustomError);
         });
 
-        // todo: finish
         it('should pass MissingScopesError to next if user have not enough scope and missingScopeHandler is not set', async () => {
+            const scopeExtractorWithError = jest.fn(() => []);
+            openapi.endpoints().setScopeExtractor(scopeExtractorWithError);
+            await expect(sdk.test.scopes.common()).rejects.toThrow();
+            expect(scopeExtractorWithError).toBeCalled();
+            expect(controller.authEndpoint).not.toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
         });
 
-        it('should pass result of missingScopeHandler to the next function if user have not enough scope', async () => {
+        it('should pass missingScopeHandler result to the next function if user have not enough scope', async () => {
+            const scopeExtractor = jest.fn(() => []);
+            openapi.endpoints().setScopeExtractor(scopeExtractor);
+            openapi.endpoints().setMissingScopeHandler(() => new CustomError());
+            await expect(sdk.test.scopes.common()).rejects.toThrow();
+            expect(scopeExtractor).toBeCalled();
+            expect(controller.authEndpoint).not.toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(CustomError);
         });
 
         it('should allow access when user have admin scope for this resource', async () => {
+            const scopeExtractor = jest.fn(() => ['test:admin']);
+            openapi.endpoints().setScopeExtractor(scopeExtractor);
+            const result = await sdk.test.scopes.common();
+            expect(result).toBe('auth');
+            expect(scopeExtractor).toBeCalled();
+            expect(controller.authEndpoint).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
         });
 
         it('should allow access when endpoint required scope starts with user scope', async () => {
+            const scopeExtractor = jest.fn(() => ['test']);
+            openapi.endpoints().setScopeExtractor(scopeExtractor);
+            await sdk.test.scopes.read();
+            await sdk.test.scopes.post();
+            await sdk.test.scopes.put();
+            await sdk.test.scopes.patch();
+            await sdk.test.scopes.delete();
+            expect(scopeExtractor).toBeCalledTimes(5);
+            expect(controller.authEndpoint).toBeCalledTimes(5);
+            expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
         });
 
         it('should require read scope when neither action nor scope not specified and method is GET', async () => {
+            const scopeExtractor = jest.fn(() => ['test:read']);
+            openapi.endpoints().setScopeExtractor(scopeExtractor);
+            const result = await sdk.test.scopes.read();
+            expect(result).toBe('auth');
+            expect(scopeExtractor).toBeCalled();
+            expect(controller.authEndpoint).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
+
+            jest.clearAllMocks();
+
+            // have access to all ops for "test" resource
+            const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:write', 'test:action', 'test:bla:bla']);
+            openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
+            await expect(sdk.test.scopes.admin()).rejects.toThrow();
+            expect(controller.authEndpoint).not.toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
         });
 
-        it('should require write scope when neither action nor scope not specified and method is one of: POST, PUT, PATCH, DELETE', async () => {
+        it('should require write scope when neither action nor scope not specified and method is one of: POST, PUT, PATCH, DELETE', async () => { // eslint-disable-line
+            const scopeExtractor = jest.fn(() => ['test:write']);
+            openapi.endpoints().setScopeExtractor(scopeExtractor);
+            await sdk.test.scopes.post();
+            await sdk.test.scopes.put();
+            await sdk.test.scopes.patch();
+            await sdk.test.scopes.delete();
+            expect(scopeExtractor).toBeCalledTimes(4);
+            expect(controller.authEndpoint).toBeCalledTimes(4);
+            expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
+
+            jest.clearAllMocks();
+
+            // have access to all ops for "test" resource
+            const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:read', 'test:action', 'test:bla:bla']);
+            openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
+            await expect(sdk.test.scopes.admin()).rejects.toThrow();
+            expect(controller.authEndpoint).not.toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
         });
 
         it('should require admin permissions when endpoint has admin property set to true', async () => {
+            const scopeExtractor = jest.fn(() => ['test:admin']);
+            openapi.endpoints().setScopeExtractor(scopeExtractor);
+            const result = await sdk.test.scopes.admin();
+            expect(result).toBe('auth');
+            expect(scopeExtractor).toBeCalled();
+            expect(controller.authEndpoint).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
+
+            jest.clearAllMocks();
+
+            // have access to all ops for "test" resource
+            const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test']);
+            openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
+            await expect(sdk.test.scopes.admin()).rejects.toThrow();
+            expect(controller.authEndpoint).not.toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
+        });
+
+        it('should require scope from action property when specified', async () => {
+            const scopeExtractor = jest.fn(() => ['test:action']);
+            openapi.endpoints().setScopeExtractor(scopeExtractor);
+            const result = await sdk.test.scopes.action();
+            expect(result).toBe('auth');
+            expect(scopeExtractor).toBeCalled();
+            expect(controller.authEndpoint).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
+
+            jest.clearAllMocks();
+
+            // have access to all ops for "test" resource
+            const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:write', 'test:read', 'test:scope', 'test:bla:bla']);
+            openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
+            await expect(sdk.test.scopes.admin()).rejects.toThrow();
+            expect(controller.authEndpoint).not.toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
         });
 
         it('should require scope from scope property when specified', async () => {
+            const scopeExtractor = jest.fn(() => ['test:scope']);
+            openapi.endpoints().setScopeExtractor(scopeExtractor);
+            const result = await sdk.test.scopes.scope();
+            expect(result).toBe('auth');
+            expect(scopeExtractor).toBeCalled();
+            expect(controller.authEndpoint).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
+
+            jest.clearAllMocks();
+
+            // have access to all ops for "test" resource
+            const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:write', 'test:read', 'test:action', 'test:bla:bla']);
+            openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
+            await expect(sdk.test.scopes.admin()).rejects.toThrow();
+            expect(controller.authEndpoint).not.toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
+            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
         });
     });
 
