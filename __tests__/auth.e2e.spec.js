@@ -14,8 +14,17 @@ const mockAbacMiddlewareFactory = jest.fn(() => {
     console.log('abac middleware factory');
     return mockAbacMiddleware;
 });
+const mockAnotherAbacMiddleware = jest.fn((req, res, next) => {
+    console.log('another abac middleware');
+    next();
+});
+const mockAnotherAbacMiddlewareFactory = jest.fn(() => {
+    console.log('another abac middleware factory');
+    return mockAnotherAbacMiddleware;
+});
 jest.mock('./__app__/server/test/test.abac.js', () => mockAbacMiddlewareFactory);
 jest.mock('./__app__/server/test/test_1.abac.js', () => mockAbacMiddlewareFactory);
+jest.mock('./__app__/server/test/test_2.abac.js', () => mockAnotherAbacMiddlewareFactory);
 
 const mockScopeExtractor = jest.fn(() => {
     console.log('scope extractor');
@@ -106,6 +115,14 @@ describe('openapi auth e2e', () => {
             expect(result).toBe('auth');
             expect(mockAbacMiddleware).not.toBeCalled();
             expect(mockScopeExtractor).toBeCalled();
+            expect(controller.authEndpoint).toBeCalled();
+        });
+
+        it('should load abac for resource from explicit "abac" option if specified', async () => {
+            const result = await sdk.test.auth.explicitAbac();
+            expect(result).toBe('auth');
+            expect(mockAnotherAbacMiddleware).toBeCalled();
+            expect(mockAbacMiddleware).not.toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
         });
 

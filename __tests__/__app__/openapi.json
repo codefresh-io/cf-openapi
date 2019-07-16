@@ -58,7 +58,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         }
       }
@@ -73,7 +73,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -97,7 +97,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -122,7 +122,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -147,7 +147,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -172,7 +172,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -196,7 +196,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -220,7 +220,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -263,7 +263,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -305,7 +305,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -329,7 +329,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -354,7 +354,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -386,7 +386,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -402,7 +402,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -418,7 +418,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -434,7 +434,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -450,7 +450,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -470,7 +470,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -495,7 +495,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -520,7 +520,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -545,12 +545,38 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
           "auth": {
             "acl": {
+              "resource": "resource_without_abac"
+            }
+          },
+          "handler": "test.authEndpoint"
+        }
+      }
+    },
+    "/test/auth/explicit-abac": {
+      "get": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-auth-with-resource",
+        "x-sdk-interface": "test.auth.explicitAbac",
+        "summary": "Endpoint with auth",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Json"
+          }
+        },
+        "x-endpoint": {
+          "auth": {
+            "acl": {
+              "abac": "test_2",
               "resource": "resource_without_abac"
             }
           },
@@ -570,7 +596,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -595,7 +621,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -620,7 +646,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -643,7 +669,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -666,7 +692,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -687,7 +713,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -708,7 +734,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -729,7 +755,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -752,7 +778,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -780,7 +806,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -808,7 +834,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/json"
+            "$ref": "#/components/responses/Json"
           }
         },
         "x-endpoint": {
@@ -827,33 +853,33 @@
   },
   "components": {
     "schemas": {
-      "json": {
+      "Json": {
         "type": "object",
         "properties": {
 
         },
-        "description": "json"
+        "description": "Json"
       }
     },
     "requestBodies": {
-      "json": {
-        "description": "json",
+      "Json": {
+        "description": "Json",
         "content": {
-          "application/json": {
+          "application/Json": {
             "schema": {
-              "$ref": "#/components/schemas/json"
+              "$ref": "#/components/schemas/Json"
             }
           }
         }
       }
     },
     "responses": {
-      "json": {
-        "description": "json",
+      "Json": {
+        "description": "Json",
         "content": {
-          "application/json": {
+          "application/Json": {
             "schema": {
-              "$ref": "#/components/schemas/json"
+              "$ref": "#/components/schemas/Json"
             }
           }
         }
