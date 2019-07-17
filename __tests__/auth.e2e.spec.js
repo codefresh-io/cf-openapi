@@ -192,16 +192,6 @@ describe('openapi auth e2e', () => {
             expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(CustomError);
         });
 
-        it('should allow access when user have admin scope for this resource', async () => {
-            const scopeExtractor = jest.fn(() => ['test:admin']);
-            openapi.endpoints().setScopeExtractor(scopeExtractor);
-            const result = await sdk.test.scopes.common();
-            expect(result).toBe('auth');
-            expect(scopeExtractor).toBeCalled();
-            expect(controller.authEndpoint).toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
-        });
-
         it('should allow access when endpoint required scope starts with user scope', async () => {
             const scopeExtractor = jest.fn(() => ['test']);
             openapi.endpoints().setScopeExtractor(scopeExtractor);
@@ -215,13 +205,6 @@ describe('openapi auth e2e', () => {
             expect(scopeExtractor).toBeCalledTimes(7);
             expect(controller.authEndpoint).toBeCalledTimes(7);
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
-
-            jest.clearAllMocks();
-
-            await expect(sdk.test.scopes.admin()).rejects.toThrow();
-            expect(controller.authEndpoint).not.toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
         });
 
         it('should require read scope when neither action nor scope not specified and method is GET', async () => {
@@ -257,26 +240,6 @@ describe('openapi auth e2e', () => {
             jest.clearAllMocks();
 
             const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:read', 'test:action', 'test:bla:bla']);
-            openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
-            await expect(sdk.test.scopes.admin()).rejects.toThrow();
-            expect(controller.authEndpoint).not.toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
-        });
-
-        it('should require admin permissions when endpoint has admin property set to true', async () => {
-            const scopeExtractor = jest.fn(() => ['test:admin']);
-            openapi.endpoints().setScopeExtractor(scopeExtractor);
-            const result = await sdk.test.scopes.admin();
-            expect(result).toBe('auth');
-            expect(scopeExtractor).toBeCalled();
-            expect(controller.authEndpoint).toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
-
-            jest.clearAllMocks();
-
-            // have access to all ops for "test" resource
-            const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test']);
             openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
             await expect(sdk.test.scopes.admin()).rejects.toThrow();
             expect(controller.authEndpoint).not.toBeCalled();
