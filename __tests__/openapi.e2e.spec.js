@@ -12,6 +12,7 @@ const pestSpec = require('./__data__/pest-openapi');
 const eventsInterface = require('./__app__/events-interface');
 const middleware = require('./__app__/server/test/test.middleware');
 const controller = require('./__app__/server/test/test.controller');
+const arrayController = require('./__app__/server/test/test.array.controller');
 const globalMiddleware = require('./__app__/server/global.middleware');
 
 jest.spyOn(globalMiddleware, '_errorMiddlewareChecker');
@@ -30,6 +31,9 @@ jest.spyOn(controller, 'paramsEndpoint');
 jest.spyOn(controller, 'paramsOptionalEndpoint');
 jest.spyOn(controller, 'errorEndpoint');
 jest.spyOn(controller, 'globalConditionalOverridedLoadedEndpoint');
+
+jest.spyOn(arrayController, 'middlewareChecker');
+jest.spyOn(arrayController, 'handlerChecker');
 
 const sdk = new Codefresh();
 
@@ -206,6 +210,18 @@ describe('openapi e2e', () => {
         expect(middleware.postMiddleware).not.toBeCalled();
         expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
         expect(controller.errorEndpoint).toBeCalled();
+    });
+
+    it('should expose endpoint with array handler', async () => {
+        const result = await sdk.test.arrayHandler();
+        expect(result).toBe('array');
+        expect(middleware.preMiddleware).toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
+        expect(arrayController.middlewareChecker).toBeCalledTimes(3);
+        expect(arrayController.handlerChecker).toBeCalled();
+        expect(middleware.preMiddleware).toHaveBeenCalledBefore(arrayController.middlewareChecker);
+        expect(arrayController.middlewareChecker).toHaveBeenCalledBefore(arrayController.handlerChecker);
+        expect(arrayController.handlerChecker).toHaveBeenCalledBefore(middleware.postMiddleware);
     });
 
     afterAll(async () => {

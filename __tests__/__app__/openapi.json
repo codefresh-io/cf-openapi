@@ -849,6 +849,38 @@
           "handler": "test.authEndpoint"
         }
       }
+    },
+    "/test/array-handler": {
+      "get": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-array-handler",
+        "x-sdk-interface": "test.arrayHandler",
+        "summary": "Endpoint with auth",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Json"
+          }
+        },
+        "x-endpoint": {
+          "isEndpoint": false,
+          "auth": {
+            "acl": {
+              "scope": "scope"
+            }
+          },
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.array.arrayHandler"
+        }
+      }
     }
   },
   "components": {
