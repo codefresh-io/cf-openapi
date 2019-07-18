@@ -363,7 +363,8 @@
               "auth.isAuthenticated"
             ],
             "acl": {
-              "resource": "test"
+              "resource": "test",
+              "abac": true
             }
           },
           "preMiddleware": [
@@ -390,6 +391,11 @@
           }
         },
         "x-endpoint": {
+          "auth": {
+            "acl": {
+              "abac": true
+            }
+          },
           "handler": "test.authEndpoint"
         }
       },
@@ -406,6 +412,11 @@
           }
         },
         "x-endpoint": {
+          "auth": {
+            "acl": {
+              "abac": true
+            }
+          },
           "handler": "test.authEndpoint"
         }
       },
@@ -422,6 +433,11 @@
           }
         },
         "x-endpoint": {
+          "auth": {
+            "acl": {
+              "abac": true
+            }
+          },
           "handler": "test.authEndpoint"
         }
       },
@@ -438,6 +454,11 @@
           }
         },
         "x-endpoint": {
+          "auth": {
+            "acl": {
+              "abac": true
+            }
+          },
           "handler": "test.authEndpoint"
         }
       },
@@ -454,6 +475,11 @@
           }
         },
         "x-endpoint": {
+          "auth": {
+            "acl": {
+              "abac": true
+            }
+          },
           "handler": "test.authEndpoint"
         }
       }
@@ -476,7 +502,8 @@
         "x-endpoint": {
           "auth": {
             "acl": {
-              "resource": "test_1"
+              "resource": "test_1",
+              "abac": true
             }
           },
           "handler": "test.authEndpoint"
@@ -501,7 +528,8 @@
         "x-endpoint": {
           "auth": {
             "acl": {
-              "action": "test"
+              "action": "test",
+              "abac": true
             }
           },
           "handler": "test.authEndpoint"
@@ -526,32 +554,8 @@
         "x-endpoint": {
           "auth": {
             "acl": {
-              "property": "test"
-            }
-          },
-          "handler": "test.authEndpoint"
-        }
-      }
-    },
-    "/test/auth/without-existing-abac": {
-      "get": {
-        "tags": [
-          "test"
-        ],
-        "operationId": "test-auth-with-resource",
-        "x-sdk-interface": "test.auth.withoutAbac",
-        "summary": "Endpoint with auth",
-        "parameters": [
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/components/responses/Json"
-          }
-        },
-        "x-endpoint": {
-          "auth": {
-            "acl": {
-              "resource": "resource_without_abac"
+              "property": "test",
+              "abac": true
             }
           },
           "handler": "test.authEndpoint"
@@ -576,7 +580,8 @@
         "x-endpoint": {
           "auth": {
             "acl": {
-              "abac": "test_2",
+              "abac": true,
+              "abacSource": "test_2",
               "resource": "resource_without_abac"
             }
           },
@@ -584,13 +589,13 @@
         }
       }
     },
-    "/test/auth/with-abac-disabled": {
+    "/test/auth/with-abac-not-enabled": {
       "get": {
         "tags": [
           "test"
         ],
         "operationId": "test-auth-with-resource",
-        "x-sdk-interface": "test.auth.abacDisabled",
+        "x-sdk-interface": "test.auth.abacNotEnabled",
         "summary": "Endpoint with auth",
         "parameters": [
         ],
@@ -600,11 +605,6 @@
           }
         },
         "x-endpoint": {
-          "auth": {
-            "acl": {
-              "disableAbac": true
-            }
-          },
           "handler": "test.authEndpoint"
         }
       }

@@ -110,15 +110,7 @@ describe('openapi auth e2e', () => {
             expect(controller.authEndpoint).toBeCalled();
         });
 
-        it('should not call abac middleware when abac does not exist for this resource', async () => {
-            const result = await sdk.test.auth.withoutAbac();
-            expect(result).toBe('auth');
-            expect(mockAbacMiddleware).not.toBeCalled();
-            expect(mockScopeExtractor).toBeCalled();
-            expect(controller.authEndpoint).toBeCalled();
-        });
-
-        it('should load abac for resource from explicit "abac" option if specified', async () => {
+        it('should load abac for resource from explicit "abacSource" option if specified', async () => {
             const result = await sdk.test.auth.explicitAbac();
             expect(result).toBe('auth');
             expect(mockAnotherAbacMiddleware).toBeCalled();
@@ -126,8 +118,8 @@ describe('openapi auth e2e', () => {
             expect(controller.authEndpoint).toBeCalled();
         });
 
-        it('should not call abac middleware when disableAbac is passed', async () => {
-            const result = await sdk.test.auth.abacDisabled();
+        it('should not call abac middleware when "abac" property is not passed', async () => {
+            const result = await sdk.test.auth.abacNotEnabled();
             expect(result).toBe('auth');
             expect(mockAbacMiddleware).not.toBeCalled();
             expect(mockScopeExtractor).toBeCalled();
@@ -137,7 +129,7 @@ describe('openapi auth e2e', () => {
         it('should not call scopes middleware when disableScope is passed', async () => {
             const result = await sdk.test.auth.scopesDisabled();
             expect(result).toBe('auth');
-            expect(mockAbacMiddleware).toBeCalled();
+            expect(mockAbacMiddleware).not.toBeCalled();
             expect(mockScopeExtractor).not.toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
         });
@@ -310,7 +302,9 @@ describe('openapi auth e2e', () => {
             expect(abacFactoryCalls[7][0]).toMatchObject({ action: 'test' });
         });
         it('should pass all props from acl to abac factory merged with auto-defined', async () => {
-            expect(abacFactoryCalls[8][0]).toEqual({ action: 'read', resource: 'test', property: 'test' });
+            expect(abacFactoryCalls[8][0]).toEqual({
+                abac: true, action: 'read', resource: 'test', property: 'test',
+            });
         });
     });
 
