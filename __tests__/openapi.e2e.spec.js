@@ -61,7 +61,7 @@ describe('openapi e2e', () => {
         sdk.configure(await Config.nonAuthenticated({
             url,
             spec: {
-                url: `${url}${defaults.SPEC_PATH}`,
+                url: `${url}${defaults.SPEC_ENDPOINT_PATH}`,
             },
         }));
         request = request.defaults({
@@ -89,26 +89,26 @@ describe('openapi e2e', () => {
     });
 
     it('should expose /api/openapi.json', async () => {
-        const result = await request(defaults.SPEC_PATH);
+        const result = await request(defaults.SPEC_ENDPOINT_PATH);
         expect(result).toHaveProperty('openapi', '3.0.0');
         expect(globalMiddleware.specMiddleware).toBeCalled();
     });
 
     it('should expose /api', async () => {
-        const result = await request(defaults.REDOC_PATH);
-        expect(result).toMatch(new RegExp(`spec-url='${defaults.SPEC_PATH}'`, 'g'));
+        const result = await request(defaults.REDOC_ENDPOINT_PATH);
+        expect(result).toMatch(new RegExp(`spec-url='${defaults.SPEC_ENDPOINT_PATH}'`, 'g'));
         expect(globalMiddleware.specMiddleware).toBeCalled();
     });
 
     it('should expose /api/admin/openapi.json', async () => {
-        const result = await request(defaults.ADMIN_SPEC_PATH);
+        const result = await request(defaults.ADMIN_SPEC_ENDPOINT_PATH);
         expect(result).toHaveProperty('openapi', '3.0.0');
         expect(globalMiddleware.dependenciesSpecMiddleware).toBeCalled();
     });
 
     it('should expose /api/admin', async () => {
-        const result = await request(defaults.ADMIN_REDOC_PATH);
-        expect(result).toMatch(new RegExp(`spec-url='${defaults.ADMIN_SPEC_PATH}'`, 'g'));
+        const result = await request(defaults.ADMIN_REDOC_ENDPOINT_PATH);
+        expect(result).toMatch(new RegExp(`spec-url='${defaults.ADMIN_SPEC_ENDPOINT_PATH}'`, 'g'));
         expect(globalMiddleware.dependenciesSpecMiddleware).toBeCalled();
     });
 

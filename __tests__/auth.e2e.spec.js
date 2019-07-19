@@ -79,7 +79,7 @@ describe('openapi auth e2e', () => {
         sdk.configure(await Config.nonAuthenticated({
             url,
             spec: {
-                url: `${url}${defaults.SPEC_PATH}`,
+                url: `${url}${defaults.SPEC_ENDPOINT_PATH}`,
             },
         }));
         request = request.defaults({
@@ -95,7 +95,7 @@ describe('openapi auth e2e', () => {
 
     describe('exposing endpoints and middleware', () => {
         it('should expose /api/scopes', async () => {
-            const result = await request(defaults.SCOPES_PATH);
+            const result = await request(defaults.SCOPES_ENDPOINT_PATH);
             expect(result).toEqual(openapi.spec().collectScopeObject());
             expect(globalMiddleware.scopesMiddleware).toBeCalled();
         });
