@@ -21,7 +21,12 @@ class GlobalMiddleware {
         next();
     }
 
-    scopesMiddleware(req, res, next) {
+    scopesEndpointMiddleware(req, res, next) {
+        console.log('scopes middleware');
+        next();
+    }
+
+    abacEndpointMiddleware(req, res, next) {
         console.log('scopes middleware');
         next();
     }

@@ -45,7 +45,8 @@ const middleware = require('./__app__/server/test/test.middleware');
 const controller = require('./__app__/server/test/test.controller');
 const globalMiddleware = require('./__app__/server/global.middleware');
 
-jest.spyOn(globalMiddleware, 'scopesMiddleware');
+jest.spyOn(globalMiddleware, 'scopesEndpointMiddleware');
+jest.spyOn(globalMiddleware, 'abacEndpointMiddleware');
 jest.spyOn(globalMiddleware, '_errorMiddlewareChecker');
 
 jest.spyOn(authMiddleware, 'isAuthenticated');
@@ -97,7 +98,12 @@ describe('openapi auth e2e', () => {
         it('should expose /api/scopes', async () => {
             const result = await request(defaults.SCOPES_ENDPOINT_PATH);
             expect(result).toEqual(openapi.spec().collectScopeObject());
-            expect(globalMiddleware.scopesMiddleware).toBeCalled();
+            expect(globalMiddleware.scopesEndpointMiddleware).toBeCalled();
+        });
+        it('should expose /api/scopes', async () => {
+            const result = await request(defaults.ABAC_ENDPOINT_PATH);
+            expect(result).toEqual(openapi.spec().collectAbacResources());
+            expect(globalMiddleware.abacEndpointMiddleware).toBeCalled();
         });
 
         it('should expose auth-endpoint and call middleware in order auth->scope->abac->logic', async () => {
