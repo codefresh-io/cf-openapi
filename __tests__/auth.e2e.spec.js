@@ -3,7 +3,7 @@ const nock = require('nock');
 
 const app = require('./__app__');
 const defaults = require('../defaults');
-const { openapi, errors: { DisableScopesError, MissingScopesError } } = require('../lib');
+const { openapi, errors: { MissingScopesError } } = require('../lib');
 let request = require('request-promise');
 
 const mockAbacMiddleware = jest.fn((req, res, next) => {
@@ -26,14 +26,20 @@ jest.mock('./__app__/server/test/test.abac.js', () => mockAbacMiddlewareFactory)
 jest.mock('./__app__/server/test/test_1.abac.js', () => mockAbacMiddlewareFactory);
 jest.mock('./__app__/server/test/test_2.abac.js', () => mockAnotherAbacMiddlewareFactory);
 
+const mockScopeCondition = jest.fn(() => {
+    console.log('scope condition');
+    return false;
+});
+
 const mockScopeExtractor = jest.fn(() => {
     console.log('scope extractor');
-    throw new DisableScopesError();
+    return [];
 });
 const mockMissingScopeHandler = jest.fn((missingScopes) => {
     console.log(`missing scope handler: ${missingScopes}`);
     return new MissingScopesError(`Missing scopes: ${missingScopes}`);
 });
+openapi.endpoints().setScopeCondition(mockScopeCondition);
 openapi.endpoints().setScopeExtractor(mockScopeExtractor);
 
 const budaSpec = require('./__data__/buda-openapi');
@@ -110,7 +116,7 @@ describe('openapi auth e2e', () => {
             const result = await sdk.test.authEndpoint();
             expect(result).toBe('auth');
             expect(authMiddleware.isAuthenticated).toHaveBeenCalledBefore(mockScopeExtractor);
-            expect(mockScopeExtractor).toHaveBeenCalledBefore(mockAbacMiddleware);
+            expect(mockScopeCondition).toHaveBeenCalledBefore(mockAbacMiddleware);
             expect(mockAbacMiddleware).toHaveBeenCalledBefore(middleware.preMiddleware);
             expect(middleware.postMiddleware).toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
@@ -128,7 +134,7 @@ describe('openapi auth e2e', () => {
             const result = await sdk.test.auth.abacNotEnabled();
             expect(result).toBe('auth');
             expect(mockAbacMiddleware).not.toBeCalled();
-            expect(mockScopeExtractor).toBeCalled();
+            expect(mockScopeCondition).toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
         });
 
@@ -136,6 +142,7 @@ describe('openapi auth e2e', () => {
             const result = await sdk.test.auth.scopesDisabled();
             expect(result).toBe('auth');
             expect(mockAbacMiddleware).not.toBeCalled();
+            expect(mockScopeCondition).not.toBeCalled();
             expect(mockScopeExtractor).not.toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
         });
@@ -143,25 +150,34 @@ describe('openapi auth e2e', () => {
 
     describe('scopes logic', () => {
         beforeEach(() => {
+            openapi.endpoints().setScopeCondition(mockScopeCondition);
             openapi.endpoints().setScopeExtractor(mockScopeExtractor);
             openapi.endpoints().setMissingScopeHandler(mockMissingScopeHandler);
         });
 
-        it('should allow access to endpoint if DisableScopesError was thrown', async () => {
+        it('should allow access to endpoint if scopeCondition returned false', async () => {
             const result = await sdk.test.scopes.common();
             expect(result).toBe('auth');
-            expect(mockScopeExtractor).toBeCalled();
-            expect(mockScopeExtractor.mock.results[0].value).toBeInstanceOf(DisableScopesError);
+            expect(mockScopeCondition).toHaveReturnedWith(false);
+            expect(mockScopeExtractor).not.toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
         });
 
-        it('should pass error to next function if error is not of type DisableScopesError', async () => {
+        it('should pass error to next function if error appeared', async () => {
             const scopeExtractorWithError = jest.fn(() => {
                 throw new CustomError();
             });
+            const scopeCondition = jest.fn(() => {
+                console.log('scope condition');
+                return true;
+            });
+            openapi.endpoints().setScopeCondition(scopeCondition);
             openapi.endpoints().setScopeExtractor(scopeExtractorWithError);
+
             await expect(sdk.test.scopes.common()).rejects.toThrow();
+
+            expect(scopeCondition).toBeCalled();
             expect(scopeExtractorWithError).toBeCalled();
             expect(scopeExtractorWithError.mock.results[0].value).toBeInstanceOf(CustomError);
             expect(controller.authEndpoint).not.toBeCalled();
@@ -170,9 +186,17 @@ describe('openapi auth e2e', () => {
         });
 
         it('should pass MissingScopesError to next if user have not enough scope and missingScopeHandler is not set', async () => {
+            const scopeCondition = jest.fn(() => {
+                console.log('scope condition');
+                return true;
+            });
             const scopeExtractorWithError = jest.fn(() => []);
+            openapi.endpoints().setScopeCondition(scopeCondition);
             openapi.endpoints().setScopeExtractor(scopeExtractorWithError);
+
             await expect(sdk.test.scopes.common()).rejects.toThrow();
+
+            expect(scopeCondition).toBeCalled();
             expect(scopeExtractorWithError).toBeCalled();
             expect(controller.authEndpoint).not.toBeCalled();
             expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
@@ -180,10 +204,18 @@ describe('openapi auth e2e', () => {
         });
 
         it('should pass missingScopeHandler result to the next function if user have not enough scope', async () => {
+            const scopeCondition = jest.fn(() => {
+                console.log('scope condition');
+                return true;
+            });
             const scopeExtractor = jest.fn(() => []);
+            openapi.endpoints().setScopeCondition(scopeCondition);
             openapi.endpoints().setScopeExtractor(scopeExtractor);
             openapi.endpoints().setMissingScopeHandler(() => new CustomError());
+
             await expect(sdk.test.scopes.common()).rejects.toThrow();
+
+            expect(scopeCondition).toBeCalled();
             expect(scopeExtractor).toBeCalled();
             expect(controller.authEndpoint).not.toBeCalled();
             expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
@@ -191,8 +223,14 @@ describe('openapi auth e2e', () => {
         });
 
         it('should allow access when endpoint required scope starts with user scope', async () => {
+            const scopeCondition = jest.fn(() => {
+                console.log('scope condition');
+                return true;
+            });
             const scopeExtractor = jest.fn(() => ['test']);
+            openapi.endpoints().setScopeCondition(scopeCondition);
             openapi.endpoints().setScopeExtractor(scopeExtractor);
+
             await sdk.test.scopes.read();
             await sdk.test.scopes.post();
             await sdk.test.scopes.put();
@@ -200,48 +238,82 @@ describe('openapi auth e2e', () => {
             await sdk.test.scopes.delete();
             await sdk.test.scopes.action();
             await sdk.test.scopes.scope();
+
+            expect(scopeCondition).toBeCalledTimes(7);
             expect(scopeExtractor).toBeCalledTimes(7);
             expect(controller.authEndpoint).toBeCalledTimes(7);
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
         });
 
         it('should require read scope when neither action nor scope not specified and method is GET', async () => {
+            const scopeCondition = jest.fn(() => {
+                console.log('scope condition');
+                return true;
+            });
             const scopeExtractor = jest.fn(() => ['test:read']);
+            openapi.endpoints().setScopeCondition(scopeCondition);
             openapi.endpoints().setScopeExtractor(scopeExtractor);
+
             const result = await sdk.test.scopes.read();
+
             expect(result).toBe('auth');
+            expect(scopeCondition).toBeCalled();
             expect(scopeExtractor).toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
         });
 
         it('should require write scope when neither action nor scope not specified and method is one of: POST, PUT, PATCH, DELETE', async () => { // eslint-disable-line
+            const scopeCondition = jest.fn(() => {
+                console.log('scope condition');
+                return true;
+            });
             const scopeExtractor = jest.fn(() => ['test:write']);
+            openapi.endpoints().setScopeCondition(scopeCondition);
             openapi.endpoints().setScopeExtractor(scopeExtractor);
+
             await sdk.test.scopes.post();
             await sdk.test.scopes.put();
             await sdk.test.scopes.patch();
             await sdk.test.scopes.delete();
+
+            expect(scopeCondition).toBeCalledTimes(4);
             expect(scopeExtractor).toBeCalledTimes(4);
             expect(controller.authEndpoint).toBeCalledTimes(4);
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
         });
 
         it('should require scope from action property when specified', async () => {
+            const scopeCondition = jest.fn(() => {
+                console.log('scope condition');
+                return true;
+            });
             const scopeExtractor = jest.fn(() => ['test:action']);
+            openapi.endpoints().setScopeCondition(scopeCondition);
             openapi.endpoints().setScopeExtractor(scopeExtractor);
+
             const result = await sdk.test.scopes.action();
+
             expect(result).toBe('auth');
+            expect(scopeCondition).toBeCalled();
             expect(scopeExtractor).toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
         });
 
         it('should require scope from scope property when specified', async () => {
+            const scopeCondition = jest.fn(() => {
+                console.log('scope condition');
+                return true;
+            });
             const scopeExtractor = jest.fn(() => ['test:scope']);
+            openapi.endpoints().setScopeCondition(scopeCondition);
             openapi.endpoints().setScopeExtractor(scopeExtractor);
+
             const result = await sdk.test.scopes.scope();
+
             expect(result).toBe('auth');
+            expect(scopeCondition).toBeCalled();
             expect(scopeExtractor).toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
