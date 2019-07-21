@@ -562,6 +562,41 @@
         }
       }
     },
+    "/test/auth/with-explicit-abac-options": {
+      "get": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-auth-with-resource",
+        "x-sdk-interface": "test.authWithAdditional",
+        "summary": "Endpoint with auth",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Json"
+          }
+        },
+        "x-endpoint": {
+          "auth": {
+            "acl": {
+              "description": "test",
+              "abac": true,
+              "abacOptions": [
+                {
+                  "action": "read"
+                },
+                {
+                  "action": "custom",
+                  "description": "custom"
+                }
+              ]
+            }
+          },
+          "handler": "test.authEndpoint"
+        }
+      }
+    },
     "/test/auth/explicit-abac": {
       "get": {
         "tags": [

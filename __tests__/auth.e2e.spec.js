@@ -250,31 +250,50 @@ describe('openapi auth e2e', () => {
 
     describe('define acl resource and action when not specified', () => {
         it('should resolve resource from url base', async () => {
-            expect(abacFactoryCalls[1][0]).toMatchObject({ resource: 'test' });
+            expect(abacFactoryCalls[1][0]).toMatchObject([{ resource: 'test' }]);
         });
         it('should interpret GET as read action', async () => {
-            expect(abacFactoryCalls[1][0]).toMatchObject({ action: 'read' });
+            expect(abacFactoryCalls[1][0]).toMatchObject([{ action: 'read' }]);
         });
         it('should interpret POST as create action', async () => {
-            expect(abacFactoryCalls[2][0]).toMatchObject({ action: 'create' });
+            expect(abacFactoryCalls[2][0]).toMatchObject([{ action: 'create' }]);
         });
         it('should interpret PUT and PATCH as update action', async () => {
-            expect(abacFactoryCalls[3][0]).toMatchObject({ action: 'update' });
-            expect(abacFactoryCalls[4][0]).toMatchObject({ action: 'update' });
+            expect(abacFactoryCalls[3][0]).toMatchObject([{ action: 'update' }]);
+            expect(abacFactoryCalls[4][0]).toMatchObject([{ action: 'update' }]);
         });
         it('should interpret DELETE as delete action', async () => {
-            expect(abacFactoryCalls[5][0]).toMatchObject({ action: 'delete' });
+            expect(abacFactoryCalls[5][0]).toMatchObject([{ action: 'delete' }]);
         });
         it('should use resource from openapi when specified', async () => {
-            expect(abacFactoryCalls[6][0]).toMatchObject({ resource: 'test_1' });
+            expect(abacFactoryCalls[6][0]).toMatchObject([{ resource: 'test_1' }]);
         });
         it('should use action from openapi when specified', async () => {
-            expect(abacFactoryCalls[7][0]).toMatchObject({ action: 'test' });
+            expect(abacFactoryCalls[7][0]).toMatchObject([{ action: 'test' }]);
         });
-        it('should pass all props from acl to abac factory merged with auto-defined', async () => {
-            expect(abacFactoryCalls[8][0]).toEqual({
-                abac: true, action: 'read', resource: 'test', property: 'test',
-            });
+        it('should pass all props from acl to abac factory as array of objects defaulted from auto-defined', async () => {
+            expect(abacFactoryCalls[8][0]).toEqual([{
+                abac: true,
+                action: 'read',
+                resource: 'test',
+                property: 'test',
+                httpMethod: 'get',
+                urlPath: '/test/auth/with-additional-properties',
+            }]);
+        });
+        it('should pass all abacOptions from acl to abac factory as array of objects defaulted from acl', async () => {
+            expect(abacFactoryCalls[9][0]).toMatchObject([
+                {
+                    action: 'read',
+                    resource: 'test',
+                    description: 'test',
+                },
+                {
+                    action: 'custom',
+                    resource: 'test',
+                    description: 'custom',
+                },
+            ]);
         });
     });
 
