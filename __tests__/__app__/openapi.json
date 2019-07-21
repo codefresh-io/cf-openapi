@@ -766,34 +766,6 @@
         }
       }
     },
-    "/test/scopes/admin": {
-      "get": {
-        "tags": [
-          "test"
-        ],
-        "operationId": "test-auth-with-resource",
-        "x-sdk-interface": "test.scopes.admin",
-        "summary": "Endpoint with auth",
-        "parameters": [
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/components/responses/Json"
-          }
-        },
-        "x-endpoint": {
-          "auth": {
-            "acl": {
-              "admin": true
-            }
-          },
-          "postMiddleware": [
-            "global.errorMiddleware"
-          ],
-          "handler": "test.authEndpoint"
-        }
-      }
-    },
     "/test/scopes/action": {
       "get": {
         "tags": [

@@ -213,15 +213,6 @@ describe('openapi auth e2e', () => {
             expect(scopeExtractor).toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
-
-            jest.clearAllMocks();
-
-            const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:write', 'test:action', 'test:bla:bla']);
-            openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
-            await expect(sdk.test.scopes.admin()).rejects.toThrow();
-            expect(controller.authEndpoint).not.toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
         });
 
         it('should require write scope when neither action nor scope not specified and method is one of: POST, PUT, PATCH, DELETE', async () => { // eslint-disable-line
@@ -234,15 +225,6 @@ describe('openapi auth e2e', () => {
             expect(scopeExtractor).toBeCalledTimes(4);
             expect(controller.authEndpoint).toBeCalledTimes(4);
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
-
-            jest.clearAllMocks();
-
-            const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:read', 'test:action', 'test:bla:bla']);
-            openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
-            await expect(sdk.test.scopes.admin()).rejects.toThrow();
-            expect(controller.authEndpoint).not.toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
         });
 
         it('should require scope from action property when specified', async () => {
@@ -253,15 +235,6 @@ describe('openapi auth e2e', () => {
             expect(scopeExtractor).toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
-
-            jest.clearAllMocks();
-
-            const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:write', 'test:read', 'test:scope', 'test:bla:bla']);
-            openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
-            await expect(sdk.test.scopes.admin()).rejects.toThrow();
-            expect(controller.authEndpoint).not.toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
         });
 
         it('should require scope from scope property when specified', async () => {
@@ -272,15 +245,6 @@ describe('openapi auth e2e', () => {
             expect(scopeExtractor).toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
             expect(globalMiddleware._errorMiddlewareChecker).not.toBeCalled();
-
-            jest.clearAllMocks();
-
-            const scopeExtractorWithNotEnoughScope = jest.fn(() => ['test:write', 'test:read', 'test:action', 'test:bla:bla']);
-            openapi.endpoints().setScopeExtractor(scopeExtractorWithNotEnoughScope);
-            await expect(sdk.test.scopes.admin()).rejects.toThrow();
-            expect(controller.authEndpoint).not.toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
-            expect(globalMiddleware._errorMiddlewareChecker.mock.calls[0][0]).toBeInstanceOf(MissingScopesError);
         });
     });
 
