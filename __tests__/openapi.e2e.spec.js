@@ -12,9 +12,10 @@ const pestSpec = require('./__data__/pest-openapi');
 const eventsInterface = require('./__app__/events-interface');
 const middleware = require('./__app__/server/test/test.middleware');
 const controller = require('./__app__/server/test/test.controller');
+const arrayController = require('./__app__/server/test/test.array.controller');
 const globalMiddleware = require('./__app__/server/global.middleware');
 
-jest.spyOn(globalMiddleware, 'errorMiddleware');
+jest.spyOn(globalMiddleware, '_errorMiddlewareChecker');
 jest.spyOn(globalMiddleware, 'specMiddleware');
 jest.spyOn(globalMiddleware, 'dependenciesSpecMiddleware');
 
@@ -30,6 +31,9 @@ jest.spyOn(controller, 'paramsEndpoint');
 jest.spyOn(controller, 'paramsOptionalEndpoint');
 jest.spyOn(controller, 'errorEndpoint');
 jest.spyOn(controller, 'globalConditionalOverridedLoadedEndpoint');
+
+jest.spyOn(arrayController, 'middlewareChecker');
+jest.spyOn(arrayController, 'handlerChecker');
 
 const sdk = new Codefresh();
 
@@ -57,7 +61,7 @@ describe('openapi e2e', () => {
         sdk.configure(await Config.nonAuthenticated({
             url,
             spec: {
-                url: `${url}${defaults.SPEC_PATH}`,
+                url: `${url}${defaults.SPEC_ENDPOINT_PATH}`,
             },
         }));
         request = request.defaults({
@@ -85,26 +89,26 @@ describe('openapi e2e', () => {
     });
 
     it('should expose /api/openapi.json', async () => {
-        const result = await request(defaults.SPEC_PATH);
+        const result = await request(defaults.SPEC_ENDPOINT_PATH);
         expect(result).toHaveProperty('openapi', '3.0.0');
         expect(globalMiddleware.specMiddleware).toBeCalled();
     });
 
     it('should expose /api', async () => {
-        const result = await request(defaults.REDOC_PATH);
-        expect(result).toMatch(new RegExp(`spec-url='${defaults.SPEC_PATH}'`, 'g'));
+        const result = await request(defaults.REDOC_ENDPOINT_PATH);
+        expect(result).toMatch(new RegExp(`spec-url='${defaults.SPEC_ENDPOINT_PATH}'`, 'g'));
         expect(globalMiddleware.specMiddleware).toBeCalled();
     });
 
     it('should expose /api/admin/openapi.json', async () => {
-        const result = await request(defaults.ADMIN_SPEC_PATH);
+        const result = await request(defaults.ADMIN_SPEC_ENDPOINT_PATH);
         expect(result).toHaveProperty('openapi', '3.0.0');
         expect(globalMiddleware.dependenciesSpecMiddleware).toBeCalled();
     });
 
     it('should expose /api/admin', async () => {
-        const result = await request(defaults.ADMIN_REDOC_PATH);
-        expect(result).toMatch(new RegExp(`spec-url='${defaults.ADMIN_SPEC_PATH}'`, 'g'));
+        const result = await request(defaults.ADMIN_REDOC_ENDPOINT_PATH);
+        expect(result).toMatch(new RegExp(`spec-url='${defaults.ADMIN_SPEC_ENDPOINT_PATH}'`, 'g'));
         expect(globalMiddleware.dependenciesSpecMiddleware).toBeCalled();
     });
 
@@ -116,7 +120,7 @@ describe('openapi e2e', () => {
         const result = await sdk.test.endpoint();
         expect(result).toBe('endpoint');
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.endpoint).toBeCalled();
     });
 
@@ -132,7 +136,7 @@ describe('openapi e2e', () => {
         const result = await sdk.test.conditionalLoadedEndpoint();
         expect(result).toBe('conditional loaded');
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.conditionalLoadedEndpoint).toBeCalled();
     });
 
@@ -147,7 +151,7 @@ describe('openapi e2e', () => {
         const result = await sdk.test.globalConditionalLoadedEndpoint();
         expect(result).toBe('global conditional loaded');
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.globalConditionalLoadedEndpoint).toBeCalled();
     });
 
@@ -162,7 +166,7 @@ describe('openapi e2e', () => {
         const result = await sdk.test.globalConditionalOverridedLoadedEndpoint();
         expect(result).toBe('global overrided loaded');
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.globalConditionalOverridedLoadedEndpoint).toBeCalled();
     });
 
@@ -174,7 +178,7 @@ describe('openapi e2e', () => {
         const result = await sdk.test.paramsEndpoint(params);
         expect(result).toEqual(params);
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.paramsEndpoint).toBeCalled();
     });
 
@@ -195,17 +199,29 @@ describe('openapi e2e', () => {
         const withOptionalResult = await sdk.test.paramsOptionalEndpoint(paramsWithOptional);
         expect(withOptionalResult).toEqual(paramsWithOptional);
 
-        expect(middleware.preMiddleware).toBeCalledTimes(2);
-        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(middleware.preMiddleware).toBeCalledTimes(3); // todo: why three times?
+        expect(middleware.postMiddleware).toBeCalled();
         expect(controller.paramsOptionalEndpoint).toBeCalledTimes(2);
     });
 
     it('should catch errors from endpoints', async () => {
         await expect(sdk.test.errorEndpoint()).rejects.toThrow();
         expect(middleware.preMiddleware).toBeCalled();
-        expect(middleware.postMiddleware).toBeCalled();
-        expect(globalMiddleware.errorMiddleware).toBeCalled();
+        expect(middleware.postMiddleware).not.toBeCalled();
+        expect(globalMiddleware._errorMiddlewareChecker).toBeCalled();
         expect(controller.errorEndpoint).toBeCalled();
+    });
+
+    it('should expose endpoint with array handler', async () => {
+        const result = await sdk.test.arrayHandler();
+        expect(result).toBe('array');
+        expect(middleware.preMiddleware).toBeCalled();
+        expect(middleware.postMiddleware).toBeCalled();
+        expect(arrayController.middlewareChecker).toBeCalledTimes(3);
+        expect(arrayController.handlerChecker).toBeCalled();
+        expect(middleware.preMiddleware).toHaveBeenCalledBefore(arrayController.middlewareChecker);
+        expect(arrayController.middlewareChecker).toHaveBeenCalledBefore(arrayController.handlerChecker);
+        expect(arrayController.handlerChecker).toHaveBeenCalledBefore(middleware.postMiddleware);
     });
 
     afterAll(async () => {

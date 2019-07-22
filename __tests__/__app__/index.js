@@ -21,6 +21,8 @@ class App {
         openapi.events().setPublishInterface(eventsInterface.publish);
         openapi.endpoints().addSpecMiddleware(globalMiddleware.specMiddleware);
         openapi.endpoints().addDependenciesSpecMiddleware(globalMiddleware.dependenciesSpecMiddleware);
+        openapi.endpoints().addScopeEndpointMiddleware(globalMiddleware.scopesEndpointMiddleware);
+        openapi.endpoints().addAbacEndpointMiddleware(globalMiddleware.abacEndpointMiddleware);
         openapi.endpoints().register(this.app);
         openapi.dependencies().fetch();
         this.server = this.app.listen(0, () => {

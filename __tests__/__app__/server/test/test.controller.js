@@ -37,7 +37,11 @@ class TestController {
     }
 
     errorEndpoint(req, res) { // eslint-disable-line
-        return Promise.reject();
+        return Promise.reject(new Error('error'));
+    }
+
+    authEndpoint(req, res) { // eslint-disable-line
+        return Promise.resolve('auth');
     }
 }
 
