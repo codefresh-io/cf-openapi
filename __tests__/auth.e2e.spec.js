@@ -106,7 +106,7 @@ describe('openapi auth e2e', () => {
             expect(result).toEqual(openapi.spec().collectScopeObject());
             expect(globalMiddleware.scopesEndpointMiddleware).toBeCalled();
         });
-        it('should expose /api/scopes', async () => {
+        it('should expose /api/abac-resources', async () => {
             const result = await request(defaults.ABAC_ENDPOINT_PATH);
             expect(result).toEqual(openapi.spec().collectAbacResources());
             expect(globalMiddleware.abacEndpointMiddleware).toBeCalled();

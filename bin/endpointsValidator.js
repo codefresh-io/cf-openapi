@@ -7,7 +7,7 @@ function endpointsValidator(openapiJson) {
     const appRoot = findAppRoot(process.cwd());
     endpoints.appRoot = appRoot;
     spec.appRoot = appRoot;
-    endpoints.loadEndpoints();
+    endpoints.loadAppComponents();
     spec.set(openapiJson);
     endpoints.validateAppEndpoints();
 }
