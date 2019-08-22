@@ -95,6 +95,8 @@ let abacFactoryCalls;
 describe('openapi auth e2e', () => {
     beforeAll(async () => {
         await app.init();
+        openapi.endpoints().setCacheCondition(() => true);
+        openapi.endpoints().setIdentityExtractor(() => 'identity');
         await app.start();
         eventsInterface.callback('buda');
         eventsInterface.callback('pest');
@@ -138,7 +140,7 @@ describe('openapi auth e2e', () => {
             expect(cacheStore.read).toHaveBeenCalledBefore(middleware.preMiddleware);
             expect(middleware.postMiddleware).toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
-        }).timeout(10000);
+        });
 
         it('should load abac for resource from explicit "abacSource" option if specified', async () => {
             const result = await sdk.test.auth.explicitAbac();

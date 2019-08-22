@@ -177,78 +177,84 @@ describe('openapi cache e2e', () => {
             currentCache = 'cache';
         });
 
-        it('should read response from cache when cache exist for single', async () => {
-            const result = await sdk.test.cacheSingleEndpoint({ id: 'identifierValue' });
-            expect(result).toEqual('cache');
-            expect(mockCacheStore.read).toBeCalledWith( // eslint-disable-line
-                'identity:test:single:identifierValue:/api/test/cache-single-endpoint?id=identifierValue',
-            ); // eslint-disable-line
-            expect(mockCacheStore.write).not.toBeCalled();
-            expect(controller.cacheSingleEndpoint).not.toBeCalled();
+        describe('read/write', () => {
+            it('should read response from cache when cache exist for single', async () => {
+                const result = await sdk.test.cacheSingleEndpoint({ id: 'identifierValue' });
+                expect(result).toEqual('cache');
+                expect(mockCacheStore.read).toBeCalledWith( // eslint-disable-line
+                    'identity:test:single:identifierValue:/api/test/cache-single-endpoint?id=identifierValue',
+                ); // eslint-disable-line
+                expect(mockCacheStore.write).not.toBeCalled();
+                expect(controller.cacheSingleEndpoint).not.toBeCalled();
+            });
+
+            it('should read response from cache when cache exist for list', async () => {
+                const result = await sdk.test.cacheListEndpoint({ id: 'identifierValue' });
+                expect(result).toEqual('cache');
+                expect(mockCacheStore.read).toBeCalledWith('identity:test:list:/api/test/cache-list-endpoint');
+                expect(mockCacheStore.write).not.toBeCalled();
+                expect(controller.cacheSingleEndpoint).not.toBeCalled();
+            });
+
+            it('should store response when cache does not exist for single', async () => {
+                currentCache = null;
+                const result = await sdk.test.cacheSingleEndpoint({ id: 'identifierValue' });
+                expect(result).toEqual('cacheSingleEndpoint');
+                expect(mockCacheStore.read).toBeCalledWith( // eslint-disable-line
+                    'identity:test:single:identifierValue:/api/test/cache-single-endpoint?id=identifierValue',
+                ); // eslint-disable-line
+                expect(mockCacheStore.write).toBeCalledWith(
+                    'identity:test:single:identifierValue:/api/test/cache-single-endpoint?id=identifierValue',
+                    'cacheSingleEndpoint',
+                );
+                expect(controller.cacheSingleEndpoint).toBeCalled();
+            });
+
+            it('should store response when cache does not exist for list', async () => {
+                currentCache = null;
+                const result = await sdk.test.cacheListEndpoint({ id: 'identifierValue' });
+                expect(result).toEqual('cacheListEndpoint');
+                expect(mockCacheStore.read).toBeCalledWith('identity:test:list:/api/test/cache-list-endpoint');
+                expect(mockCacheStore.write).toBeCalledWith(
+                    'identity:test:list:/api/test/cache-list-endpoint',
+                    'cacheListEndpoint',
+                );
+                expect(controller.cacheListEndpoint).toBeCalled();
+            });
+
+            it('should skip cache when cache type is "single" and identifierValue is not provided', async () => {
+                const result = await sdk.test.cacheSingleEndpoint();
+                expect(result).toEqual('cacheSingleEndpoint');
+                expect(mockCacheStore.read).not.toBeCalled();
+                expect(mockCacheStore.write).not.toBeCalled();
+                expect(controller.cacheSingleEndpoint).toBeCalled();
+            });
+
+            it('should use identity got from identityExtractor when it exists', async () => {
+                const mockIdentityExtractor = jest.fn(() => 'identity'); // eslint-disable-line
+                openapi.endpoints().setIdentityExtractor(mockIdentityExtractor);
+                const result = await sdk.test.cacheSingleEndpoint({ id: 'identifierValue' });
+                expect(result).toEqual('cache');
+                expect(mockCacheStore.read).toBeCalledWith( // eslint-disable-line
+                    'identity:test:single:identifierValue:/api/test/cache-single-endpoint?id=identifierValue',
+                ); // eslint-disable-line
+                expect(mockCacheStore.write).not.toBeCalled();
+                expect(controller.cacheSingleEndpoint).not.toBeCalled();
+            });
+
+            it('should skip cache when identity is not provided from identityExtractor', async () => {
+                const mockIdentityExtractor = jest.fn(() => null); // eslint-disable-line
+                openapi.endpoints().setIdentityExtractor(mockIdentityExtractor);
+                const result = await sdk.test.cacheSingleEndpoint({ id: 'identifierValue' });
+                expect(result).toEqual('cacheSingleEndpoint');
+                expect(mockCacheStore.read).not.toBeCalled();
+                expect(mockCacheStore.write).not.toBeCalled();
+                expect(controller.cacheSingleEndpoint).toBeCalled();
+            });
         });
 
-        it('should read response from cache when cache exist for list', async () => {
-            const result = await sdk.test.cacheListEndpoint({ id: 'identifierValue' });
-            expect(result).toEqual('cache');
-            expect(mockCacheStore.read).toBeCalledWith('identity:test:list:/api/test/cache-list-endpoint');
-            expect(mockCacheStore.write).not.toBeCalled();
-            expect(controller.cacheSingleEndpoint).not.toBeCalled();
-        });
+        describe('eviction', () => {
 
-        it('should store response when cache does not exist for single', async () => {
-            currentCache = null;
-            const result = await sdk.test.cacheSingleEndpoint({ id: 'identifierValue' });
-            expect(result).toEqual('cacheSingleEndpoint');
-            expect(mockCacheStore.read).toBeCalledWith( // eslint-disable-line
-                'identity:test:single:identifierValue:/api/test/cache-single-endpoint?id=identifierValue',
-            ); // eslint-disable-line
-            expect(mockCacheStore.write).toBeCalledWith(
-                'identity:test:single:identifierValue:/api/test/cache-single-endpoint?id=identifierValue',
-                'cacheSingleEndpoint',
-            );
-            expect(controller.cacheSingleEndpoint).toBeCalled();
-        });
-
-        it('should store response when cache does not exist for list', async () => {
-            currentCache = null;
-            const result = await sdk.test.cacheListEndpoint({ id: 'identifierValue' });
-            expect(result).toEqual('cacheListEndpoint');
-            expect(mockCacheStore.read).toBeCalledWith('identity:test:list:/api/test/cache-list-endpoint');
-            expect(mockCacheStore.write).toBeCalledWith(
-                'identity:test:list:/api/test/cache-list-endpoint',
-                'cacheListEndpoint',
-            );
-            expect(controller.cacheSingleEndpoint).toBeCalled();
-        });
-
-        it('should skip cache when cache type is "single" and identifierValue is not provided', async () => {
-            const result = await sdk.test.cacheSingleEndpoint();
-            expect(result).toEqual('cacheSingleEndpoint');
-            expect(mockCacheStore.read).not.toBeCalled();
-            expect(mockCacheStore.write).not.toBeCalled();
-            expect(controller.cacheSingleEndpoint).toBeCalled();
-        });
-
-        it('should use identity got from identityExtractor when it exists', async () => {
-            const mockIdentityExtractor = jest.fn(() => 'identity'); // eslint-disable-line
-            openapi.endpoints().setIdentityExtractor(mockIdentityExtractor);
-            const result = await sdk.test.cacheSingleEndpoint({ id: 'identifierValue' });
-            expect(result).toEqual('cache');
-            expect(mockCacheStore.read).toBeCalledWith( // eslint-disable-line
-                'identity:test:single:identifierValue:/api/test/cache-single-endpoint?id=identifierValue',
-            ); // eslint-disable-line
-            expect(mockCacheStore.write).not.toBeCalled();
-            expect(controller.cacheSingleEndpoint).not.toBeCalled();
-        });
-
-        it('should skip cache when identity is not provided from identityExtractor', async () => {
-            const mockIdentityExtractor = jest.fn(() => null); // eslint-disable-line
-            openapi.endpoints().setIdentityExtractor(mockIdentityExtractor);
-            const result = await sdk.test.cacheSingleEndpoint({ id: 'identifierValue' });
-            expect(result).toEqual('cacheSingleEndpoint');
-            expect(mockCacheStore.read).not.toBeCalled();
-            expect(mockCacheStore.write).not.toBeCalled();
-            expect(controller.cacheSingleEndpoint).toBeCalled();
         });
     });
 
