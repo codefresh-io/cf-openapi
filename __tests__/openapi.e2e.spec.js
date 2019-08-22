@@ -54,6 +54,7 @@ const pestNock = nock('http://buda.pest:9001')
 
 describe('openapi e2e', () => {
     beforeAll(async () => {
+        await app.init();
         await app.start();
         eventsInterface.callback('buda');
         eventsInterface.callback('pest');

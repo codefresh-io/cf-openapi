@@ -43,6 +43,16 @@ class TestController {
     authEndpoint(req, res) { // eslint-disable-line
         return Promise.resolve('auth');
     }
+
+    cacheSingleEndpoint(req, res) { // eslint-disable-line
+        console.log('cache single endpoint');
+        return Promise.resolve('cacheSingleEndpoint');
+    }
+
+    cacheListEndpoint(req, res) { // eslint-disable-line
+        console.log('cache list endpoint');
+        return Promise.resolve('cacheListEndpoint');
+    }
 }
 
 module.exports = new TestController();

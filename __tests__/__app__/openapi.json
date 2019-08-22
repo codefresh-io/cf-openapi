@@ -367,6 +367,13 @@
               "abac": true
             }
           },
+          "cache": {
+            "entity": "test",
+            "type": "list",
+            "evict": [
+              "test.updated"
+            ]
+          },
           "preMiddleware": [
             "test.preMiddleware"
           ],
@@ -886,6 +893,83 @@
             "test.postMiddleware"
           ],
           "handler": "test.array.arrayHandler"
+        }
+      }
+    },
+    "/test/cache-single-endpoint": {
+      "get": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-cache-single-endpoint",
+        "x-sdk-interface": "test.cacheSingleEndpoint",
+        "summary": "Endpoint with cache",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "description": "id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Json"
+          }
+        },
+        "x-endpoint": {
+          "cache": {
+            "entity": "test",
+            "type": "single",
+            "identifier": "query.id",
+            "evict": [
+              "test.evict_1",
+              "test.evict_2"
+            ]
+          },
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.cacheSingleEndpoint"
+        }
+      }
+    },
+    "/test/cache-list-endpoint": {
+      "get": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-cache-list-endpoint",
+        "x-sdk-interface": "test.cacheListEndpoint",
+        "summary": "Endpoint with cache",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Json"
+          }
+        },
+        "x-endpoint": {
+          "cache": {
+            "entity": "test",
+            "type": "list",
+            "evict": [
+              "test.evict_1",
+              "test.evict_2"
+            ]
+          },
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.cacheListEndpoint"
         }
       }
     }

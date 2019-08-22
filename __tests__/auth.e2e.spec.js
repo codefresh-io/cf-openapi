@@ -42,6 +42,21 @@ const mockMissingScopeHandler = jest.fn((missingScopes) => {
 openapi.endpoints().setScopeCondition(mockScopeCondition);
 openapi.endpoints().setScopeExtractor(mockScopeExtractor);
 
+const cacheStore = {
+    read: jest.fn(async () => {
+        console.log('cache store read');
+        return null;
+    }),
+    write: jest.fn(async () => {
+        console.log('cache store write');
+        return null;
+    }),
+    evict: jest.fn(async () => {
+        console.log('cache store evict');
+        return null;
+    }),
+};
+
 const budaSpec = require('./__data__/buda-openapi');
 const pestSpec = require('./__data__/pest-openapi');
 
@@ -79,6 +94,7 @@ let abacFactoryCalls;
 
 describe('openapi auth e2e', () => {
     beforeAll(async () => {
+        await app.init();
         await app.start();
         eventsInterface.callback('buda');
         eventsInterface.callback('pest');
@@ -94,6 +110,7 @@ describe('openapi auth e2e', () => {
             json: true,
         });
         abacFactoryCalls = mockAbacMiddlewareFactory.mock.calls;
+        openapi.cache().setStore(cacheStore);
     });
 
     beforeEach(() => {
@@ -112,15 +129,16 @@ describe('openapi auth e2e', () => {
             expect(globalMiddleware.abacEndpointMiddleware).toBeCalled();
         });
 
-        it('should expose auth-endpoint and call middleware in order auth->scope->abac->logic', async () => {
+        it('should expose auth-endpoint and call middleware in order auth->scope->abac->cache->logic', async () => {
             const result = await sdk.test.authEndpoint();
             expect(result).toBe('auth');
             expect(authMiddleware.isAuthenticated).toHaveBeenCalledBefore(mockScopeExtractor);
             expect(mockScopeCondition).toHaveBeenCalledBefore(mockAbacMiddleware);
-            expect(mockAbacMiddleware).toHaveBeenCalledBefore(middleware.preMiddleware);
+            expect(mockAbacMiddleware).toHaveBeenCalledBefore(cacheStore.read);
+            expect(cacheStore.read).toHaveBeenCalledBefore(middleware.preMiddleware);
             expect(middleware.postMiddleware).toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
-        });
+        }).timeout(10000);
 
         it('should load abac for resource from explicit "abacSource" option if specified', async () => {
             const result = await sdk.test.auth.explicitAbac();
