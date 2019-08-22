@@ -241,16 +241,14 @@ describe('openapi cache e2e', () => {
             expect(controller.cacheSingleEndpoint).not.toBeCalled();
         });
 
-        it('should calculate cacheKey without identity got from identityExtractor when it is null', async () => {
+        it('should skip cache when identity is not provided from identityExtractor', async () => {
             const mockIdentityExtractor = jest.fn(() => null); // eslint-disable-line
             openapi.endpoints().setIdentityExtractor(mockIdentityExtractor);
             const result = await sdk.test.cacheSingleEndpoint({ id: 'identifierValue' });
-            expect(result).toEqual('cache');
-            expect(mockCacheStore.read).toBeCalledWith( // eslint-disable-line
-                'test:single:identifierValue:/api/test/cache-single-endpoint?id=identifierValue',
-            ); // eslint-disable-line
+            expect(result).toEqual('cacheSingleEndpoint');
+            expect(mockCacheStore.read).not.toBeCalled();
             expect(mockCacheStore.write).not.toBeCalled();
-            expect(controller.cacheSingleEndpoint).not.toBeCalled();
+            expect(controller.cacheSingleEndpoint).toBeCalled();
         });
     });
 
