@@ -371,7 +371,13 @@
             "entity": "test",
             "type": "list",
             "evict": [
-              "test.updated"
+              {
+                "event": "test.updated",
+                "identifiers": [
+                  "test"
+                ],
+                "identity": "test"
+              }
             ]
           },
           "preMiddleware": [
@@ -925,8 +931,20 @@
             "type": "single",
             "identifier": "query.id",
             "evict": [
-              "test.evict_1",
-              "test.evict_2"
+              {
+                "event": "test.evict_1",
+                "identifiers": [
+                  "test"
+                ],
+                "identity": "test"
+              },
+              {
+                "event": "test.evict_2",
+                "identifiers": [
+                  "test"
+                ],
+                "identity": "test"
+              }
             ]
           },
           "preMiddleware": [
@@ -959,8 +977,20 @@
             "entity": "test",
             "type": "list",
             "evict": [
-              "test.evict_1",
-              "test.evict_2"
+              {
+                "event": "test.evict_1",
+                "identifiers": [
+                  "test"
+                ],
+                "identity": "test"
+              },
+              {
+                "event": "test.evict_2",
+                "identifiers": [
+                  "test"
+                ],
+                "identity": "test"
+              }
             ]
           },
           "preMiddleware": [
