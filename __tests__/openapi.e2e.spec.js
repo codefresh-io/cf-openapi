@@ -1,6 +1,9 @@
 const { Codefresh, Config } = require('codefresh-sdk');
 const nock = require('nock');
 const Promise = require('bluebird');
+const fse = require('fs-extra');
+const yaml = require('js-yaml');
+const path = require('path');
 
 const app = require('./__app__');
 const defaults = require('../defaults');
@@ -31,6 +34,7 @@ jest.spyOn(controller, 'paramsEndpoint');
 jest.spyOn(controller, 'paramsOptionalEndpoint');
 jest.spyOn(controller, 'errorEndpoint');
 jest.spyOn(controller, 'globalConditionalOverridedLoadedEndpoint');
+jest.spyOn(controller, 'bodyParser');
 
 jest.spyOn(arrayController, 'middlewareChecker');
 jest.spyOn(arrayController, 'handlerChecker');
@@ -223,6 +227,58 @@ describe('openapi e2e', () => {
         expect(middleware.preMiddleware).toHaveBeenCalledBefore(arrayController.middlewareChecker);
         expect(arrayController.middlewareChecker).toHaveBeenCalledBefore(arrayController.handlerChecker);
         expect(arrayController.handlerChecker).toHaveBeenCalledBefore(middleware.postMiddleware);
+    });
+
+    describe('bodyParser', () => {
+        let smallYaml;
+        let largeYaml;
+
+        beforeAll(async () => {
+            smallYaml = await fse.readFile(path.resolve(__dirname, '__data__', 'small_file.yaml'));
+            smallYaml = yaml.safeLoad(smallYaml);
+            largeYaml = await fse.readFile(path.resolve(__dirname, '__data__', 'large_file.yaml'));
+            largeYaml = yaml.safeLoad(largeYaml);
+        });
+
+        it('should successfully process big request body when body parser is configured to large payload', async () => {
+            let result = await sdk.test.bodyParser(smallYaml);
+            expect(result).toEqual(smallYaml);
+            result = await sdk.test.bodyParser(largeYaml);
+            expect(result).toEqual(largeYaml);
+
+            expect(middleware.preMiddleware).toBeCalledTimes(2);
+            expect(middleware.postMiddleware).toBeCalledTimes(2);
+            expect(controller.bodyParser).toBeCalledTimes(2);
+        });
+
+        it('should not register body parser when parser config not specified', async () => {
+            // should have returned request body in case body parser had been specified
+            let result = await sdk.test.bodyParserNonConfigured(smallYaml);
+            expect(result).toEqual('');
+            result = await sdk.test.bodyParserNonConfigured(largeYaml);
+            expect(result).toEqual('');
+
+            expect(middleware.preMiddleware).toBeCalledTimes(2);
+            expect(middleware.postMiddleware).toBeCalledTimes(2);
+            expect(controller.bodyParser).toBeCalledTimes(2);
+        });
+
+        it('should throw 413 on body parser when configured limit is too low', async () => {
+            let error;
+            await expect(Promise.resolve().then(async () => {
+                try {
+                    await sdk.test.bodyParserSmallLimit(largeYaml)
+                } catch (e) {
+                    error = e;
+                    throw e;
+                }
+            })).rejects.toThrow();
+            expect(error.statusCode).toBe(413);
+
+            expect(middleware.preMiddleware).not.toBeCalled();
+            expect(middleware.postMiddleware).not.toBeCalled();
+            expect(controller.bodyParser).not.toBeCalled();
+        });
     });
 
     afterAll(async () => {

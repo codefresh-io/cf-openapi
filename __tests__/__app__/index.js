@@ -35,6 +35,7 @@ class App {
 
     async start() {
         const deferred = Promise.defer();
+        openapi.endpoints().registerUtilityMiddleware(this.app);
         openapi.endpoints().register(this.app);
         openapi.dependencies().fetch();
         this.server = this.app.listen(0, () => {
