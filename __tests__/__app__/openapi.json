@@ -1002,6 +1002,99 @@
           "handler": "test.cacheListEndpoint"
         }
       }
+    },
+    "/test/body-parser": {
+      "post": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-body-parser",
+        "x-sdk-interface": "test.bodyParser",
+        "summary": "Endpoint body parser options",
+        "parameters": [
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Json"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Json"
+          }
+        },
+        "x-endpoint": {
+          "utility": {
+            "bodyParser": {
+              "limit": "5mb"
+            }
+          },
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.bodyParser"
+        }
+      },
+      "put": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-body-parser-non-configured",
+        "x-sdk-interface": "test.bodyParserNonConfigured",
+        "summary": "Endpoint body parser options",
+        "parameters": [
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Json"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Json"
+          }
+        },
+        "x-endpoint": {
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.bodyParser"
+        }
+      },
+      "patch": {
+        "tags": [
+          "test"
+        ],
+        "operationId": "test-body-parser-small-limit",
+        "x-sdk-interface": "test.bodyParserSmallLimit",
+        "summary": "Endpoint body parser options",
+        "parameters": [
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Json"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Json"
+          }
+        },
+        "x-endpoint": {
+          "utility": {
+            "bodyParser": {
+              "limit": "10kb"
+            }
+          },
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.bodyParser"
+        }
+      }
     }
   },
   "components": {

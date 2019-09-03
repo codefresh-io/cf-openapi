@@ -53,6 +53,11 @@ class TestController {
         console.log('cache list endpoint');
         return Promise.resolve('cacheListEndpoint');
     }
+
+    bodyParser(req, res) { // eslint-disable-line
+        console.log('body parser endpoint');
+        return req.body;
+    }
 }
 
 module.exports = new TestController();
