@@ -1,6 +1,6 @@
 {
   "name": "@codefresh-io/cf-openapi",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "scripts": {
     "test": "jest --runInBand",
     "eslint": "eslint lib/**",
@@ -12,7 +12,6 @@
   "dependencies": {
     "bluebird": "^3.5.4",
     "cf-errors": "^0.1.11",
-    "cf-logs": "^1.0.0",
     "codefresh-sdk": "^1.1.0",
     "columnify": "^1.5.4",
     "commander": "^2.19.0",
