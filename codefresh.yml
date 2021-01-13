@@ -34,6 +34,18 @@ steps:
     commands:
         - yarn test
 
+  build:
+    stage: CD
+    type: build
+    image_name: codefresh/cf-openapi
+    tag: ${{CF_BRANCH_TAG_NORMALIZED}}
+
+  push:
+    stage: CD
+    type: push
+    candidate: ${{build}}
+    tag: ${{CF_BRANCH_TAG_NORMALIZED}}
+
   add_git_tag:
     title: "Add Git tag"
     stage: CD
@@ -57,18 +69,6 @@ steps:
     when:
       branch:
         only: [ master ]
-
-  build:
-    stage: CD
-    type: build
-    image_name: codefresh/cf-openapi
-    tag: ${{CF_BRANCH_TAG_NORMALIZED}}
-
-  push:
-    stage: CD
-    type: push
-    candidate: ${{build}}
-    tag: ${{CF_BRANCH_TAG_NORMALIZED}}
 
   deploy_to_npm:
     stage: CD
