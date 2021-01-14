@@ -16,7 +16,7 @@
     "body-parser": "^1.19.0",
     "cf-errors": "^0.1.15",
     "cf-logs": "^1.1.24",
-    "codefresh-sdk": "git+https://github.com/codefresh-io/js-sdk.git#e3ac75d3b926d629b4c29855035c8cd9c81ea059",
+    "codefresh-sdk": "^1.9.17",
     "columnify": "^1.5.4",
     "commander": "^2.19.0",
     "flat": "^4.1.0",
