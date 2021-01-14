@@ -1,12 +1,9 @@
 {
   "name": "@codefresh-io/cf-openapi",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "scripts": {
     "test": "jest --runInBand",
     "eslint": "eslint lib/**"
-  },
-  "bin": {
-    "cf-openapi": "./bin/cf-openapi"
   },
   "resolutions": {
     "js-yaml": "^3.13.1"
@@ -18,15 +15,13 @@
     "cf-logs": "^1.1.24",
     "codefresh-sdk": "^1.9.17",
     "columnify": "^1.5.4",
-    "commander": "^2.19.0",
     "flat": "^4.1.0",
     "json-schema-deref-sync": "0.14.0",
     "klaw-sync": "^6.0.0",
     "lodash": "4.17.20",
     "request": "2.88.2",
     "request-promise": "4.2.6",
-    "retry": "^0.12.0",
-    "speccy": "^0.9.0"
+    "retry": "^0.12.0"
   },
   "devDependencies": {
     "eslint": "^4.11.0",
