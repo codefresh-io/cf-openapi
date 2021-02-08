@@ -3,8 +3,12 @@ class TestController {
         return 'endpoint';
     }
 
-    nonEndpoint(req, res, next) {
+    nonEndpoint(req, res) {
         res.send('non-endpoint');
+    }
+
+    nonEndpointWithNext(req, res, next) {
+        res.send('non-endpoint-with-next');
         next();
     }
 

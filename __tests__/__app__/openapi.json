@@ -112,6 +112,31 @@
         }
       }
     },
+    "/non-endpoint-with-next": {
+      "get": {
+        "tags": ["test"],
+        "operationId": "test-non-endpoint",
+        "x-sdk-interface": "test.nonEndpointWithNext",
+        "summary": "Endpoint",
+        "parameters": [
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Json"
+          }
+        },
+        "x-endpoint": {
+          "isEndpoint": false,
+          "preMiddleware": [
+            "test.preMiddleware"
+          ],
+          "postMiddleware": [
+            "test.postMiddleware"
+          ],
+          "handler": "test.nonEndpointWithNext"
+        }
+      }
+    },
     "/conditional-loaded": {
       "get": {
         "tags": ["test"],

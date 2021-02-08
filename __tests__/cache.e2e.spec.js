@@ -1,6 +1,5 @@
 const { Codefresh, Config } = require('codefresh-sdk');
 const nock = require('nock');
-const Promise = require('bluebird');
 
 const app = require('./__app__');
 const defaults = require('../defaults');
@@ -9,7 +8,6 @@ const { openapi } = require('../lib');
 const budaSpec = require('./__data__/buda-openapi');
 const pestSpec = require('./__data__/pest-openapi');
 
-const eventsInterface = require('./__app__/events-interface');
 const authMiddleware = require('./__app__/server/auth.middleware');
 const middleware = require('./__app__/server/test/test.middleware');
 const controller = require('./__app__/server/test/test.controller');
