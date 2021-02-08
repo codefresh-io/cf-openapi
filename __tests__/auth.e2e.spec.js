@@ -138,7 +138,7 @@ describe('openapi auth e2e', () => {
             expect(mockScopeCondition).toHaveBeenCalledBefore(mockAbacMiddleware);
             expect(mockAbacMiddleware).toHaveBeenCalledBefore(cacheStore.read);
             expect(cacheStore.read).toHaveBeenCalledBefore(middleware.preMiddleware);
-            expect(middleware.postMiddleware).toBeCalled();
+            expect(middleware.postMiddleware).not.toBeCalled();
             expect(controller.authEndpoint).toBeCalled();
         });
 
