@@ -1023,10 +1023,10 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codefresh-sdk@^1.9.17:
-  version "1.9.17"
-  resolved "https://registry.yarnpkg.com/codefresh-sdk/-/codefresh-sdk-1.9.17.tgz#89f7bcfb128b352a718c9146cfb596292e186a84"
-  integrity sha512-mMcgv+PwBv+TbQLwTWV361Ye2a8hhd7OCogCWMMw/zy6u2WHWMyiejJgBlMfJjWskX4ErMZVGfetEqM8EKlW7g==
+codefresh-sdk@^1.9.18:
+  version "1.9.18"
+  resolved "https://registry.yarnpkg.com/codefresh-sdk/-/codefresh-sdk-1.9.18.tgz#e1dce7163304b29b5bb8ba6522ee63ca6ed1d1b4"
+  integrity sha512-vcUwIpVnFqQra2OKufD87p+xTzQH3ab70fVFQNsq7yua1EAdfa1Nw6QDgARuvMGF36XCcGvxO6tsAJz9hGFN5A==
   dependencies:
     "@codefresh-io/cf-receiver" "0.0.1-alpha19"
     bluebird "^3.5.3"
@@ -1046,7 +1046,7 @@ codefresh-sdk@^1.9.17:
     request "2.88.2"
     request-promise "4.2.6"
     requestretry "^4.1.2"
-    swagger-client "^3.12.1"
+    swagger-client "~3.12.2"
     uniqid "^5.2.0"
     uuid "^3.3.2"
 
@@ -5120,10 +5120,10 @@ supports-color@^6.0.0, supports-color@^6.1.0:
   dependencies:
     has-flag "^3.0.0"
 
-swagger-client@^3.12.1:
-  version "3.12.1"
-  resolved "https://registry.yarnpkg.com/swagger-client/-/swagger-client-3.12.1.tgz#bbe4521c0f662e72ad84fa9dbe3eb42c9960d901"
-  integrity sha512-jxhf7yvMq1SIlaMBlL0S+2mk5eovdYNzVAn1Ewrpe1pkby2pm5PnnP8XiSImCuX7d+BxUfVFkOgCTeK38+fBlA==
+swagger-client@~3.12.2:
+  version "3.12.2"
+  resolved "https://registry.yarnpkg.com/swagger-client/-/swagger-client-3.12.2.tgz#c6d1148d749507d328a1647bd71f33166147387d"
+  integrity sha512-l4aAty0VNmHaOEEvOI7Tc6xtUZLNxtFEOZzansjxHjbV9o2ZsiFPMdomIGj14n/Zb0S2eN83cEJYHJ3SENUYPw==
   dependencies:
     "@babel/runtime-corejs3" "^7.11.2"
     btoa "^1.2.1"
