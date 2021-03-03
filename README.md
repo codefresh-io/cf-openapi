@@ -12,8 +12,9 @@
 - fetch dependency services' `openapi.json` specs on startup
 - push `openapi.push` event with micro-service `openapi.json` on startup
 - listen to `openapi.push` event for dependency services
-- `(todo)` endpoints generation from `openapi.json`
-- `(todo)` sdk generation for dependency services
+- endpoints generation from `openapi.json`
+- scope acl through generated endpoints
+- abac acl through generated endpoints
 
 ## Usage
 
