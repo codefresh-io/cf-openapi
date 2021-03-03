@@ -176,6 +176,7 @@ module.exports = new Controller();
 
 ```js
 // path: /app/index.js
+
 const express = require('express');
 const someEndpoint = require('./controllers/some-endpoint.controller.js')
 
@@ -399,7 +400,7 @@ function scopeExtractor(request) {
 openapi.endpoints().setScopeExtractor()
 ```
 
-##### NOTE: if you already defined you auth middleware in the preMiddleware -- you should move it to `auth.middleware`
+##### NOTE: if you already defined your auth middleware in the preMiddleware -- you should move it to `auth.middleware`
 
 ```js
 {
