@@ -97,7 +97,7 @@ This covers most cases except services which consist of multiple app instances (
 
 For this exception use next code:
 
-```ecmascript 6
+```js
 const { openapi: first } = require('@codefresh-io/cf-openapi').getInstance('first');
 const { openapi: second } = require('@codefresh-io/cf-openapi').getInstance('second');
 
@@ -110,7 +110,7 @@ second.init(serviceConfig_2)
 
 Config:
 
-```ecmascript 6
+```js
 {
     name: PIPELINE_MANAGER, // service name (required)
     root: APP_ROOT, // root path from which openapi.json lookup will be performed
@@ -129,7 +129,7 @@ Config:
 ```
 
 Use `false` value to explicitly disable `spec` or `dependenciesSpec`:
-```ecmascript 6
+```js
 {
     openapi: {
         spec: false,
@@ -160,7 +160,7 @@ See the [readme](https://github.com/codefresh-io/internal-service-config) for av
 #### Handler
 
 In the regular express application you do:
-```ecmascript 6
+```js
 // path: /app/controllers/some-endpoint.controller.js
 
 class Controller {
@@ -174,7 +174,7 @@ class Controller {
 module.exports = new Controller();
 ```
 
-```ecmascript 6
+```js
 // path: /app/index.js
 const express = require('express');
 const someEndpoint = require('./controllers/some-endpoint.controller.js')
@@ -200,7 +200,7 @@ to load the
 
 Here you can see the same routing configuration as in the example above:
 
-```ecmascript 6
+```js
 // path: /app/openapi.json
 
 {
@@ -259,7 +259,7 @@ Here you can see the same routing configuration as in the example above:
 
 ```
 
-```ecmascript 6
+```js
 // path: /app/controllers/some-endpoint.controller.js
 
 class Controller {
@@ -284,7 +284,7 @@ class Controller {
 module.exports = new Controller();
 ```
 
-```ecmascript 6
+```js
 // path: /app/index.js
 
 const express = require('express');
@@ -300,7 +300,7 @@ app.listen(8080);
 
 If you want to add middleware to your route like:
 
-```ecmascript 6
+```js
 app.get('/some/endpoint/:myParam',
     (req, res, next) => {
         console.log(req.params.myParam);
@@ -312,7 +312,7 @@ app.get('/some/endpoint/:myParam',
 
 You should add `logic.middleware.js` file:
 
-```ecmascript 6
+```js
 // path: /app/logic.middleware.js
 
 module.exports = {
@@ -324,7 +324,7 @@ module.exports = {
 ```
 
 and following configuration:
-```ecmascript 6
+```js
 {
 /*...*/
     "x-endpoint": {
@@ -344,7 +344,7 @@ and following configuration:
 
 If you want to add some condition on process env which will disable endpoint:
 
-```ecmascript 6
+```js
 const { DISABLE_MY_ENDPOINT } = process.env;
 
 if (DISABLE_MY_ENDPOINT !== 'true') {
@@ -354,7 +354,7 @@ if (DISABLE_MY_ENDPOINT !== 'true') {
 
 Then you should create `env.condition.js` file:
 
-```ecmascript 6
+```js
 // path /app/env.condition.js
 
 module.export = {
@@ -367,7 +367,7 @@ module.export = {
 
 and following configuration:
 
-```ecmascript 6
+```js
 {
 /*...*/
     "x-endpoint": {
@@ -389,7 +389,7 @@ which `scopes` current request authentication should have to access current endp
 
 ##### NOTE: by default this functionality is disabled -- to enable this you must provide a scopeExtractor function
 
-```ecmascript 6
+```js
 // some custom implementation -- should consume request object 
 // and return array of strings
 function scopeExtractor(request) {
@@ -401,7 +401,7 @@ openapi.endpoints().setScopeExtractor()
 
 ##### NOTE: if you already defined you auth middleware in the preMiddleware -- you should move it to `auth.middleware`
 
-```ecmascript 6
+```js
 {
 /*...*/
     "x-endpoint": {
@@ -456,7 +456,7 @@ post, patch, put, delete -> 'write'
 
 ##### NOTE: There is another level of implicitness applied from abac acl `action` property:
 
-```ecmascript 6
+```js
 {
 /*...*/
     "x-endpoint": {
@@ -480,7 +480,7 @@ create, update, delete -> 'write'
 
 If you want scope acl to skip scope validation for some reasons - you should register `scopeCondition`:
 
-```ecmascript 6
+```js
 // validate scopes only if user authentication has scopes array
 function scopeCondition(request, endpointScope) {
     return !!request.user.scopes
@@ -495,7 +495,7 @@ If you want to get all collected scopes from `openapi.json`
 and registered by `openapi.spec().registerAdditionalEndpoints({...})`
 -- then do the following:
 
-```ecmascript 6
+```js
 // scope object splitted by resource and containing descriptions
 const scopeObject = openapi.spec().collectScopeObject();
 
@@ -509,7 +509,7 @@ Once scope acl notices that user auth has not enough scope to access
 this endpoint - an error is passed to express `next()` function. If you 
 want to specify the custom error - then you should use `missingScopeHandler`
 
-```ecmascript 6
+```js
 function missingScopeHandler(missingScopes) {
     return new CustomError({
         message: `Missing scopes: ${missingScopes}`,
@@ -524,7 +524,7 @@ openapi.endpoints().setMissingScopeHandler(missingScopeHandler)
 
 If you want to explicitly configure `scope` for an endpoint then use the following properties:
 
-```ecmascript 6
+```js
 {
 /*...*/
     "x-endpoint": {
@@ -546,7 +546,7 @@ If there is still a need to use old `router` methods on bare `express`
 together with scope acl provided by `cf-openapi` you can use `openapi.endpoints().createGeneralScopeMiddleware()` 
 and `openapi.endpoints().createScopeMiddleware()` helper methods.
 
-```ecmascript 6
+```js
 // you still need to define scope extractor
 function scopeExtractor(request) {
     return request.user.scopes;
@@ -568,7 +568,7 @@ So user authentication should be `request.user.scopes = ['general', ....]`.
 If you want to declare some custom scopes to validate your endpoints programmatically
 you should do the following:
 
-```ecmascript 6
+```js
 // you still need to define scope extractor
 function scopeExtractor(request) {
     return request.user.scopes;
