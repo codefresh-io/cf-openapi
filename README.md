@@ -474,6 +474,23 @@ const scopeObject = openapi.spec().collectScopeObject();
 const scopeArray = openapi.spec().collectScopeArray();
 ```
 
+#### Missing scope handler
+
+Once scope acl notices that user auth has not enough scope to access 
+this endpoint - an error is passed to express `next()` function. If you 
+want to specify the custom error - then you should use `missingScopeHandler`
+
+```ecmascript 6
+function missingScopeHandler(missingScopes) {
+    return new CustomError({
+        message: `Missing scopes: ${missingScopes}`,
+        missingScopes,
+    })
+}
+
+openapi.endpoints().setMissingScopeHandler(missingScopeHandler)
+```
+
 #### Explicit scope configuration
 
 If you want to explicitly configure `scope` for an endpoint then use the following properties:
