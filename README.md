@@ -49,7 +49,7 @@ cf-openapi-validator lint -p
 
 #### Flow:
 
-```ecmascript 6
+```js
 const express = require('express');
 
 const { openapi } = require('@codefresh-io/cf-openapi');
@@ -208,13 +208,23 @@ Here you can see the same routing configuration as in the example above:
   "info": {
     /*...*/
   },
-  "x-base-path": "/api",  // this is used as base path for all registered endpints
-  "paths": { // will be used as route: app.get('/some/endpoint', someEndpoint.handleSomething), 
-    "/some/endpoint/{myParam}": { // this will be used to get the param by name: req.params.myName
+    
+  // this is used as base path for all registered endpints
+  "x-base-path": "/api",  
+  "paths": {
+      
+    // will be used as route: app.get('/some/endpoint', someEndpoint.handleSomething), 
+    // "myParam" will be used to get the param by name: req.params.myParam
+    "/some/endpoint/{myParam}": { 
       "get": {
         "tags": [],
-        "operationId": "some-endpoint", // you always need to specify this (it's for api docs)
-        "x-sdk-interface": "someEndpoint.requestHandleSomething", // this field is also required for skd usage like: sdk.someEndpint.requestHandleSomething()
+                
+        // you always need to specify this (it's for api docs)
+        "operationId": "some-endpoint",
+                
+        // this field is also required for skd usage like: sdk.someEndpint.requestHandleSomething()        
+        "x-sdk-interface": "someEndpoint.requestHandleSomething", 
+                
         "parameters": [
           {
             "in": "path",
@@ -225,13 +235,19 @@ Here you can see the same routing configuration as in the example above:
             "required": true
           }
         ],
-        "x-endpoint": { // this is used to configure routing
-          // this means that method handle something will call res.send() function
+                
+        // this property is used to configure routing
+        "x-endpoint": { 
+            
+          // isEnpoint=false means that method handleSomething() will call res.send() function
           // otherwise handleSomething() should return a value
           "isEndpoint": false,
+                    
           "preMiddleware": [],
           "postMiddleware": [],
-          "handler": "some-endpoint.handleSomething" // this means:  get some-endpoint.controller.js file and use method handleSomething
+                    
+          // this means:  get some-endpoint.controller.js file and use method handleSomething
+          "handler": "some-endpoint.handleSomething" 
         },
         "responses": {
           /*...*/
