@@ -144,7 +144,7 @@ Dependency services are described inside the `openapi.json` using `x-internal-se
 ```json
 {
   "openapi": "3.0.0",
-  "info": {...},
+  "info": {},
   "x-internal-services": [
     "pipeline-manager"
   ]
@@ -200,7 +200,7 @@ to load the
 
 Here you can see the same routing configuration as in the example above:
 
-```json
+```ecmascript 6
 // path: /app/openapi.json
 
 {
@@ -230,7 +230,7 @@ Here you can see the same routing configuration as in the example above:
           // otherwise handleSomething() should return a value
           "isEndpoint": false,
           "preMiddleware": [],
-          "postMiddleware" [],
+          "postMiddleware": [],
           "handler": "some-endpoint.handleSomething" // this means:  get some-endpoint.controller.js file and use method handleSomething
         },
         "responses": {
@@ -308,14 +308,18 @@ module.exports = {
 ```
 
 and following configuration:
-```json
-"x-endpoint": {
-  "preMiddleware": [
-        "logic.logMyParam"
-  ],
-  "postMiddleware" [],
-  "handler": "some-endpoint.handleSomething"
-},
+```ecmascript 6
+{
+/*...*/
+    "x-endpoint": {
+        "preMiddleware": [
+            "logic.logMyParam"
+        ],
+        "postMiddleware" [],
+        "handler": "some-endpoint.handleSomething"
+    },
+/*...*/
+}
 ```
 
 ##### NOTE: same should be applied if you want to use error middleware in `postMiddleware` array 
@@ -347,13 +351,17 @@ module.export = {
 
 and following configuration:
 
-```json
-"x-endpoint": {
-  "preMiddleware": [],
-  "postMiddleware" [],
-  "condition": "env.shouldEnableMyEndpoint" // if true -- endpoint will be loaded
-  "handler": "some-endpoint.handleSomething"
-},
+```ecmascript 6
+{
+/*...*/
+    "x-endpoint": {
+        "preMiddleware": [],
+        "postMiddleware": [],
+        "condition": "env.shouldEnableMyEndpoint", // if true -- endpoint will be loaded
+        "handler": "some-endpoint.handleSomething"
+    },
+/*...*/
+}
 ```
 
 ### Scope ACL
@@ -377,19 +385,21 @@ openapi.endpoints().setScopeExtractor()
 
 ##### NOTE: if you already defined you auth middleware in the preMiddleware -- you should move it to `auth.middleware`
 
-```json
-...
-"x-endpoint": {
-  "auth": {
-    "middleware": [
-      "auth.isAuthenticated"    
-    ]
-  }
-  "preMiddleware": [],
-  "postMiddleware": [],
-  "handler": "some-resource.handleRequest"
+```ecmascript 6
+{
+/*...*/
+    "x-endpoint": {
+        "auth": {
+            "middleware": [
+              "auth.isAuthenticated"    
+            ]
+        },
+        "preMiddleware": [],
+        "postMiddleware": [],
+        "handler": "some-resource.handleRequest"
+    }
+/*...*/
 }
-...
 ```
 
 #### Rules
@@ -430,16 +440,18 @@ post, patch, put, delete -> 'write'
 
 ##### NOTE: There is another level of implicitness applied from abac acl `action` property:
 
-```json
-...
-"x-endpoint": {
-  "auth": {
-    "acl": {
-        "action": "create"
+```ecmascript 6
+{
+/*...*/
+    "x-endpoint": {
+        "auth": {
+            "acl": {
+                "action": "create"
+            }
+        }
     }
-  }
+/*...*/
 }
-...
 ```
 
 Rules for `action` property:
@@ -496,18 +508,20 @@ openapi.endpoints().setMissingScopeHandler(missingScopeHandler)
 
 If you want to explicitly configure `scope` for an endpoint then use the following properties:
 
-```json
-...
-"x-endpoint": {
-  "auth": {
-    "acl": {
-        "resource": "pipelines" // custom <resource-name>
-        "scope": "run" // custom <scope>, can be "run:<sub-scope>"
-        "disableScopes": false // use true if you want to disable scope acl for this endpoint
+```ecmascript 6
+{
+/*...*/
+    "x-endpoint": {
+        "auth": {
+            "acl": {
+                "resource": "pipelines" // custom <resource-name>
+                "scope": "run" // custom <scope>, can be "run:<sub-scope>"
+                "disableScopes": false // use true if you want to disable scope acl for this endpoint
+            }
+        }
     }
-  }
+/*...*/
 }
-...
 ```
 
 #### Programmatic scope acl middleware usage with Express.js
