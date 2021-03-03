@@ -355,15 +355,200 @@ and following configuration:
 },
 ```
 
+### Scope ACL
 
-#### More information
+#### Overview
 
-This doc is not yet finished -- for more info please refer to:
+Cf-openapi lib provides an ability to use scope acl middleware to control
+which `scopes` current request authentication should have to access current endpoint.
+
+##### NOTE: by default this functionality is disabled -- to enable this you must provide a scopeExtractor function
+
+```ecmascript 6
+// some custom implementation -- should consume request object 
+// and return array of strings
+function scopeExtractor(request) {
+    return request.user.scopes;
+} 
+
+openapi.endpoints().setScopeExtractor()
+```
+
+##### NOTE: if you already defined you auth middleware in the preMiddleware -- you should move it to `auth.middleware`
+
+```json
+...
+"x-endpoint": {
+  "auth": {
+    "middleware": [
+      "auth.isAuthenticated"    
+    ]
+  }
+  "preMiddleware": [],
+  "postMiddleware": [],
+  "handler": "some-resource.handleRequest"
+}
+...
+```
+
+#### Rules
+
+A scope for endpoint consists from `<resource-name>` and one or more `<scope>`
+defined for this resource delimited by `:` character:
 
 ```
-cf-openapi/__tests__/__app__
+Definition: '<resource-name>:<scope>:<sub-scope>'
 
-and 
+Examples:
+'builds:read'
+'builds:read:status'
+'pipelines:write'
+```
 
-cf-openapi/__tests__/*.e2e.spec.js
+User scope used to validate his access to an endpoint can be reduced to just resource definition
+or parent scope:
+
+```
+User scope -> access to endpoint with scope:
+'builds' -> 'builds:read'
+'builds:read' -> 'builds:read:status'
+'pipelines' -> 'pipelines:write'
+```
+
+##### ATTENTION: Once scope acl is enabled cf-openapi will automatically go through all `paths` in the `openapi.json` which have `x-endpoint` trying to automatically define endpoint `scope` following the next rules:
+
+```
+1) <resource-name> will be taken from url root
+/pipelines/{name} -> resource-name = 'pipelines'
+/builds -> resource-name = 'builds' 
+
+2) <scope> will be taken from request method
+get, head, options -> 'read'
+post, patch, put, delete -> 'write'
+```
+
+##### NOTE: There is another level of implicitness applied from abac acl `action` property:
+
+```json
+...
+"x-endpoint": {
+  "auth": {
+    "acl": {
+        "action": "create"
+    }
+  }
+}
+...
+```
+
+Rules for `action` property:
+```
+read -> 'read'
+create, update, delete -> 'write'
+```
+
+#### Scope condition
+
+If you want scope acl to skip scope validation for some reasons - you should register `scopeCondition`:
+
+```ecmascript 6
+// validate scopes only if user authentication has scopes array
+function scopeCondition(request, endpointScope) {
+    return !!request.user.scopes
+}
+
+openapi.endpoints().setScopeCondition(scopeCondition)
+```
+
+#### Review existing scopes
+
+If you want to get all collected scopes from `openapi.json` 
+and registered by `openapi.spec().registerAdditionalEndpoints({...})`
+-- then do the following:
+
+```ecmascript 6
+// scope object splitted by resource and containing descriptions
+const scopeObject = openapi.spec().collectScopeObject();
+
+// scope array with all existing scopes
+const scopeArray = openapi.spec().collectScopeArray();
+```
+
+#### Explicit scope configuration
+
+If you want to explicitly configure `scope` for an endpoint then use the following properties:
+
+```json
+...
+"x-endpoint": {
+  "auth": {
+    "acl": {
+        "resource": "pipelines" // custom <resource-name>
+        "scope": "run" // custom <scope>, can be "run:<sub-scope>"
+        "disableScopes": false // use true if you want to disable scope acl for this endpoint
+    }
+  }
+}
+...
+```
+
+#### Programmatic scope acl middleware usage with Express.js
+
+If there is still a need to use old `router` methods on bare `express` 
+together with scope acl provided by `cf-openapi` you can use `openapi.endpoints().createGeneralScopeMiddleware()` 
+and `openapi.endpoints().createScopeMiddleware()` helper methods.
+
+```ecmascript 6
+// you still need to define scope extractor
+function scopeExtractor(request) {
+    return request.user.scopes;
+}
+
+// register scope extractor
+openapi.endpoints().setScopeExtractor(scopeExtractor);
+
+router.get('/pipelines',
+    auth.isAuthenticated,
+    openapi.endpoints().createGeneralScopeMiddleware(),
+    controller.handleRequest,
+);
+```
+
+In the example above registered route was created with scope `'general'`. 
+So user authentication should be `request.user.scopes = ['general', ....]`.
+
+If you want to declare some custom scopes to validate your endpoints programmatically
+you should do the following:
+
+```ecmascript 6
+// you still need to define scope extractor
+function scopeExtractor(request) {
+    return request.user.scopes;
+}
+
+// register scope extractor
+openapi.endpoints().setScopeExtractor(scopeExtractor);
+
+const ADDITIONAL_SCOPES = {
+    PIPELINES: 'pipelines',
+    PIPELINES_READ: 'pipelines:read',
+    PIPELINES_WRITE: 'pipelines:write',
+    PIPELINES_RUN: 'pipelines:run',
+}
+
+// register additional endpoint scopes
+openapi.spec().registerAdditionalScopes({
+    [ADDITIONAL_SCOPES.PIPELINES]: {
+        [ADDITIONAL_SCOPES.PIPELINES]: 'Full access to pipelines',
+        [ADDITIONAL_SCOPES.PIPELINES_READ]: 'Read access to pipelines',
+        [ADDITIONAL_SCOPES.PIPELINES_WRITE]: 'Write access to pipelines',
+        [ADDITIONAL_SCOPES.PIPELINES_RUN]: 'Run access to pipelines',
+    }
+})
+
+route.post('/pipelines/run',
+    auth.isAuthenticated,
+    openapi.endpoints().createScopeMiddleware({ scope: ADDITIONAL_SCOPES.PIPELINES_RUN }),
+    controller.run,
+)
 ```
