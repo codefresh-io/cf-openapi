@@ -11,7 +11,7 @@
   "dependencies": {
     "bluebird": "^3.5.4",
     "body-parser": "^1.19.0",
-    "cf-errors": "^0.1.15",
+    "cf-errors": "^0.1.16",
     "cf-logs": "^1.1.24",
     "codefresh-sdk": "^1.9.20",
     "columnify": "^1.5.4",
