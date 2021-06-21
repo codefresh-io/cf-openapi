@@ -13,7 +13,7 @@
     "body-parser": "^1.19.0",
     "cf-errors": "^0.1.15",
     "cf-logs": "^1.1.24",
-    "codefresh-sdk": "^1.9.20",
+    "codefresh-sdk": "^1.9.21",
     "columnify": "^1.5.4",
     "flat": "^4.1.0",
     "json-schema-deref-sync": "~0.14.0",
