@@ -902,12 +902,19 @@ cf-errors@^0.1.15:
   dependencies:
     lodash "4.17.20"
 
-cf-logs@^1.1.24:
-  version "1.1.24"
-  resolved "https://registry.yarnpkg.com/cf-logs/-/cf-logs-1.1.24.tgz#d383162ee937745aef9bf9e64a455e4f1f816ea8"
-  integrity sha512-+wbhc/t+SBpTTger5coDWoZVqtp10T4AwG581JjLOelP4ua+5K6/7RHgCpaqQpzPsoMhyxy4qgb+B6w2kptaIg==
+cf-errors@^0.1.16:
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/cf-errors/-/cf-errors-0.1.16.tgz#03d0b050ac94762552792907b08bd39d1a012116"
+  integrity sha512-ewA6cTS+bVC32NCxIdEu/5HQ8zb09PV1ubdu0t2yPXs51K31gI78+XGEomVjaXdTbZcGBPVIWhFnG6R/U7K4IQ==
   dependencies:
-    lodash "4.17.20"
+    lodash "^4.17.21"
+
+cf-logs@^1.1.25:
+  version "1.1.25"
+  resolved "https://registry.yarnpkg.com/cf-logs/-/cf-logs-1.1.25.tgz#0ee1aaa11756a4924ac32b64bc1cf97dc2f8d4ff"
+  integrity sha512-YwutDhQ601IFObemKeESq8+rRq+XDPSDHG7erDHytCPNaiLMI9llAKgAMWDFUMtpsHttAiaQCt9wemmQPqgEvQ==
+  dependencies:
+    lodash "^4.17.21"
     winston "3.3.3"
 
 chai@^4.1.2:
@@ -1023,10 +1030,10 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codefresh-sdk@^1.9.20:
-  version "1.9.20"
-  resolved "https://registry.yarnpkg.com/codefresh-sdk/-/codefresh-sdk-1.9.20.tgz#69c27effe63765d9c96370b495fc8c49551065b9"
-  integrity sha512-o35gFi63Evkx0Gr7UJeNcdr6b0FGplgOCYQI9rdh18EbXuTtuZHdIjdNgcsA6zBuh7G4tSIOmtPj7oMpM7AhzA==
+codefresh-sdk@^1.9.21:
+  version "1.9.22"
+  resolved "https://registry.yarnpkg.com/codefresh-sdk/-/codefresh-sdk-1.9.22.tgz#6dbe39ea86c2772b114ea5aded16a80852b6cb25"
+  integrity sha512-Zq+C/nrmpe0n2rd+SxmCTHL4PyCyp+IsD0rhg8ASbhhtO9zlNzTPPT7EPVyDscyXg44bYf0w9GW6kewwBGulaQ==
   dependencies:
     "@codefresh-io/cf-receiver" "0.0.1-alpha19"
     bluebird "^3.5.3"
@@ -1040,7 +1047,7 @@ codefresh-sdk@^1.9.20:
     fs-extra "^7.0.1"
     js-yaml "^3.13.1"
     jsonwebtoken "^8.4.0"
-    lodash "4.17.20"
+    lodash "^4.17.21"
     moment "^2.24.0"
     recursive-readdir "^2.2.2"
     request "2.88.2"
@@ -3465,7 +3472,7 @@ lodash@^4.17.11, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
 
-lodash@~4.17.20:
+lodash@^4.17.21, lodash@~4.17.20:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
