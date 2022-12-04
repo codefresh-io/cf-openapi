@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "bluebird": "^3.5.4",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.19.2",
     "cf-errors": "^0.1.16",
     "cf-logs": "^1.1.25",
     "columnify": "^1.5.4",
