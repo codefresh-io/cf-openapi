@@ -1,17 +1,18 @@
 {
   "name": "@codefresh-io/cf-openapi",
-  "version": "0.7.13",
+  "version": "0.7.14",
   "scripts": {
     "test": "jest --runInBand",
     "eslint": "eslint lib/**"
   },
   "resolutions": {
     "js-yaml": "^3.13.1",
-    "json-schema": "^0.4.0"
+    "json-schema": "^0.4.0",
+    "request/qs": "6.5.3"
   },
   "dependencies": {
     "bluebird": "^3.5.4",
-    "body-parser": "^1.19.0",
+    "body-parser": "1.19.2",
     "cf-errors": "^0.1.16",
     "cf-logs": "^1.1.25",
     "columnify": "^1.5.4",
@@ -29,7 +30,7 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jest": "^22.4.1",
-    "express": "^4.16.4",
+    "express": "4.17.3",
     "fs-extra": "^8.1.0",
     "jest": "^24.8.0",
     "jest-extended": "^0.11.2",
