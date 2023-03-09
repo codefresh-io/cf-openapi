@@ -20,7 +20,7 @@
     "json-schema-deref-sync": "~0.14.0",
     "klaw-sync": "^6.0.0",
     "lodash": "~4.17.21",
-    "request": "~2.88.2",
+    "request": "2.88.2",
     "request-promise": "~4.2.6",
     "retry": "^0.12.0"
   },
