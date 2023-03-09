@@ -16,7 +16,7 @@
     "cf-errors": "^0.1.16",
     "cf-logs": "^1.1.25",
     "columnify": "^1.5.4",
-    "flat": "^4.1.1",
+    "flat": "^5.0.1",
     "json-schema-deref-sync": "~0.14.0",
     "klaw-sync": "^6.0.0",
     "lodash": "~4.17.21",
