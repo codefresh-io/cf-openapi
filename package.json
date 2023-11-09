@@ -1,26 +1,24 @@
 {
   "name": "@codefresh-io/cf-openapi",
-  "version": "0.7.19",
+  "version": "0.7.20",
   "scripts": {
     "test": "jest --runInBand",
     "eslint": "eslint lib/**"
   },
   "resolutions": {
     "js-yaml": "^3.13.1",
-    "json-schema": "^0.4.0",
-    "request/qs": "6.5.3"
+    "json-schema": "^0.4.0"
   },
   "dependencies": {
+    "axios": "^1.6.1",
     "bluebird": "^3.5.4",
     "body-parser": "^1.19.2",
     "cf-errors": "^0.1.16",
-    "cf-logs": "^1.1.25",
+    "cf-logs": "^1.1.27",
     "columnify": "1.6.0",
     "json-schema-deref-sync": "~0.14.0",
     "klaw-sync": "^6.0.0",
     "lodash": "~4.17.21",
-    "request": "2.88.2",
-    "request-promise": "~4.2.6",
     "retry": "^0.12.0"
   },
   "devDependencies": {
@@ -34,7 +32,9 @@
     "jest": "^24.8.0",
     "jest-extended": "^0.11.2",
     "js-yaml": "^3.13.1",
-    "nock": "^10.0.6"
+    "nock": "^10.0.6",
+    "request": "2.88.2",
+    "request-promise": "~4.2.6"
   },
   "eslintConfig": {},
   "jest": {
@@ -45,6 +45,9 @@
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/"
-    ]
+    ],
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    }
   }
 }
